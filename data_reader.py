@@ -36,7 +36,7 @@ class SpectrumData(object):
         else:
             return int(0)
 
-    def read_out(self):
+    def read_out_abs(self):
         #check for uv data in orca.out
         found_uv_section=False
         energylist=list()       #energy cm-1
@@ -75,6 +75,9 @@ class SpectrumData(object):
 
         #return data from orca.out
         return energylist,intenslist
+
+    def read_out(self):
+        return self.read_out_abs()  # Temp solution before adding IR
 
     def read_asc(self):
         wavelengthlist=list()
