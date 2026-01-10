@@ -2,7 +2,7 @@
 
 Plot UV/Vis spectrum from ORCA output file and much more. (**TO UPDATE**)
 
-[//]: # (![show](examples/show-use3.gif))
+<!-- ![show](examples/show-use3.gif) -->
 
 A Python 3 script for (hassle-free) plotting of absorption spectra from output files with peak detection and annotation.
 It combines the stick spectrum with the convoluted spectrum (lorentzian or gaussian line shape).
@@ -60,9 +60,11 @@ The data are taken from the section "ABSORPTION SPECTRUM VIA TRANSITION ELECTRIC
 
 ## Examples:
 
-[//]: # (![Example 1](examples/example1.png))
-[//]: # (![Example 2](examples/example2.png))
-[//]: # (![Example 3](examples/example3.png))
+<!--
+![Example 1](examples/example1.png)
+![Example 2](examples/example2.png)
+![Example 3](examples/example3.png)
+-->
 
 ## Requirements
 - `sys`
