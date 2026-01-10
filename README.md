@@ -86,6 +86,7 @@ The data are taken from the section "ABSORPTION SPECTRUM VIA TRANSITION ELECTRIC
 ## Contributor
 
 Contributed by Emmanuel Bourret
+
 Based on `orca_uv` by [Sebastian Dechert](https://github.com/radi0sus/orca_uv)
 
 ## TO TO
