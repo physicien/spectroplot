@@ -5,6 +5,8 @@ import re                           #regex
 from pathlib import Path            #path processing (replace os)
 from global_constants import specstring_start, specstring_end
 
+#NOTE: See https://github.com/aligfellow/xyzrender/blob/main/src/xyzrender/parsers.py
+
 class SpectrumData(object):
     """
     Object which will contain the spectrum data extracted from the
