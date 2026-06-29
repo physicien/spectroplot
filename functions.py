@@ -111,47 +111,44 @@ def plotType(nm: bool, wn: bool, ev: bool) -> Optional[tuple[str, int]]:
         return "ev", npt_ev
     return None
 
-def wntonm(wn: list[float]) -> list[float]:
+def wntonm(wn: np.ndarray) -> np.ndarray:
     #cm**-1 to nm converter
-    return [1/w*10**7 for w in wn]
+    return 1e7 / np.asarray(wn)
 
-def wntoev(wn: list[float]) -> list[float]:
+def wntoev(wn: np.ndarray) -> np.ndarray:
     #cm**-1 to eV converter
-    return [w/conv_wntoev for w in wn]
+    return np.asarray(wn) / conv_wntoev
 
-def nmtown(wl: list[float]) -> list[float]:
+def nmtown(wl: np.ndarray) -> np.ndarray:
     #nm to cm**-1 converter
-    return [1/w*10**7 for w in wl]
+    return 1e7 / np.asarray(wl)
 
-def nmtoev(wl: list[float]) -> list[float]:
+def nmtoev(wl: np.ndarray) -> np.ndarray:
     #nm to eV converter
-    return [1/w*10**7/conv_wntoev for w in wl]
+    return 1e7 / np.asarray(wl) / conv_wntoev
 
-def unitConverter(data: list[float], ext: str, unit: str) -> list[float]:
+def unitConverter(data: np.ndarray, ext: str, unit: str) -> np.ndarray:
     #convert the x-axis data to the right units (nm, cm**-1, eV)
     if ext == ".asc":
         if unit == "wn":
             return nmtown(data)
         elif unit == "ev":
             return nmtoev(data)
-        else:
-            return data
-    else:
-        if unit == "nm":
-            return wntonm(data)
-        elif unit == "ev":
-            return wntoev(data)
-        else:
-            return data
+        return np.asarray(data)
+    if unit == "nm":
+        return wntonm(data)
+    elif unit == "ev":
+        return wntoev(data)
+    return np.asarray(data)
 
-def xdataPrep(df: pd.Series, unit: str, shift: float) -> list[float]:
+def xdataPrep(df: pd.Series, unit: str, shift: float) -> np.ndarray:
     #convert spectrum x-axis units and shift it if not experimental
     ext = df["ext"]
     if ext == ".asc":
         data = df["xdata"]
     else:
-        data = [x + shift for x in df["xdata"]]
-    return unitConverter(data,ext,unit)
+        data = np.asarray(df["xdata"]) + shift
+    return unitConverter(data, ext, unit)
 
 def xdatamin(df: pd.Series, w: float) -> float:
     #find the x-axis minimum

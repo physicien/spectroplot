@@ -9,8 +9,23 @@ import matplotlib.pyplot as plt         #plots
 import seaborn as sns                   #color palettes
 from scipy.signal import find_peaks     #peak detection
 
-from global_constants import *          #global_constants
-from functions import *                 #functions
+from global_constants import (
+    th_fac, esd_fac, ex_fac, color_palette,
+    label_tddft, label_sticks, label_expt, label_roots,
+    show_single_lineshape, show_single_lineshape_area,
+    show_conv_spectrum, show_sticks, show_exp_spectrum,
+    show_esd_spectrum, show_single_root_area,
+    show_label_peaks, show_label_roots,
+    show_minor_ticks, show_grid, show_legend, linear_locator,
+    y_label, y_label_PL, x_label_wn, x_label_ev, x_label_nm,
+    a_label, figure_dpi, acs_w, acs_h, output_name,
+    conv_wntoev, w_nm, w_wn, w_ev,
+)
+from functions import (
+    atLeastTwo, plotType, show_plots, rootSum,
+    xdataPrep, xdatamin, xdatamax, plotxrange,
+    lineshape, normalization, rounddown, roundup,
+)
 from data_reader import SpectrumData    #spectrum data parser
 
 #global containers for peak/ymax data keyed by row index
