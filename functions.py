@@ -53,7 +53,7 @@ def plotxrange(df: pd.DataFrame, x1: Optional[float], npt: int) -> np.ndarray:
     #return the x range for td-dft
     #plotrange must start at 0 for peak detection
     xmax_data = df["xdata_plot_max"].max()
-    if x1 and x1 > xmax_data:
+    if x1 is not None and x1 > xmax_data:
         maxrange = x1
     else:
         maxrange = xmax_data

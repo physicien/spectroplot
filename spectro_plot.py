@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import sys                              #sys files processing
 import re                               #regex
+from pathlib import Path                #path processing
 import argparse                         #argument parser
 import numpy as np                      #element-wise tensor processing
 import pandas as pd                     #dataframes processing
@@ -148,7 +149,7 @@ parser.add_argument('-acs','--acs_format',
 parser.add_argument('-o','--output_name',
                     type=str,
                     default=output_name,
-                    help='change the name of the saved spectrum'
+                     help='output filename (.svg default, supports .png/.pdf)'
                     )
 
 #plot the spectrum in nm
@@ -245,7 +246,9 @@ args = parser.parse_args()
 #change values according to arguments
 show_spectrum = args.show           #show the plot window if True
 save_spectrum = args.nosave         #do not save the plot if True
-filename = "{:s}.svg".format(args.output_name)  #saved plot name
+#append .svg by default if no extension given
+filename = args.output_name if Path(args.output_name).suffix \
+           else f"{args.output_name}.svg"
 acs_format = args.acs_format        #ACS Publications figure format
 nm_plot = args.plotnm               #wavelength plot /nm if True (default)
 if args.plotwn or args.plotev:
