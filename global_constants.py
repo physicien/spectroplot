@@ -24,8 +24,8 @@ show_grid = False                   #show grid if True
 show_legend = True                  #show the legend
 linear_locator = False              #tick locations at the beginning and end
                                     #of the spectrum x-axis, evenly spaced
-y_label= "Absorbance (a.u.)"            #label of the y-axis - ABS (default)
-y_label_PL = "PL Intensity (a.u.)"      #label of the y-axis - PL
+y_label= "Absorbance (arb. units)"      #label of the y-axis - ABS (default)
+y_label_PL = "PL Intensity (arb. units)"#label of the y-axis - PL
 x_label_wn = r'Energy (cm$^{-1}$)'      #label of the x-axis - wave number
 x_label_ev = r'Energy (eV)'             #label of the x-axis - eV
 #x_label_nm = r'$\lambda$ (nm)'          #label of the x-axis - nm
