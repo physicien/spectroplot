@@ -2,7 +2,6 @@
 import sys                              #sys files processing
 import re                               #regex
 import argparse                         #argument parser
-from typing import Any
 import numpy as np                      #element-wise tensor processing
 import pandas as pd                     #dataframes processing
 import matplotlib.pyplot as plt         #plots
@@ -264,7 +263,7 @@ for index,path in enumerate(args.filename):
             "xdata": spectrum.data[0],
             "ydata": spectrum.data[1],
     }
-    #keep the data only if this type of plot is requested
+    #skip data if this type of plot is not requested
     if show_plots(spectrum.filetype,shows_list):
         continue
     #add the data to the dataset

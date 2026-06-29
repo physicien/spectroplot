@@ -83,8 +83,8 @@ def lineshape(a: float, m: np.ndarray, x: float, w: float,
               ls_gauss: bool) -> np.ndarray:
     #calculation of the line shape
     # a = amplitude (max y, intensity)
-    # x = position
-    # m = maximum/meadian (stick position in x, wave number)
+    # m = full x-range array over which to compute the line shape
+    # x = stick position (wave number or energy)
     # w = line width, FWHM
     if ls_gauss:
         #Gaussian line shape
