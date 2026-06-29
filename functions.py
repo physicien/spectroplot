@@ -72,11 +72,11 @@ def roundup(x: float, ev_plot: bool, wn_plot: bool, nm_plot: bool) -> float:
 def rounddown(x: float, ev_plot: bool, wn_plot: bool, nm_plot: bool) -> float:
     #round to previous 1 or 10 or 100
     if ev_plot:
-        return x if x % 1 == 0 else x - 1 - x % 1
+        return x if x % 1 == 0 else x - x % 1
     elif wn_plot:
-        return x if x % 100 == 0 else x - 100 - x % 100
+        return x if x % 100 == 0 else x - x % 100
     elif nm_plot:
-        return x if x % 10 == 0 else x - 10 - x % 10
+        return x if x % 10 == 0 else x - x % 10
     return x
 
 def lineshape(a: float, m: np.ndarray, x: float, w: float,
