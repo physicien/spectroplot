@@ -2,6 +2,7 @@
 import sys                              #sys files processing
 import re                               #regex
 import argparse                         #argument parser
+from typing import Any
 import numpy as np                      #element-wise tensor processing
 import pandas as pd                     #dataframes processing
 import matplotlib.pyplot as plt         #plots
@@ -12,12 +13,11 @@ from global_constants import *          #global_constants
 from functions import *                 #functions
 from data_reader import SpectrumData    #spectrum data parser
 
-#global list
-xdata_list = list()
-ydata_list = list()
-peaks_list = list()
-roots_list = list()
-ymax_list = list()
+#global containers for peak/ymax data keyed by row index
+plot_data: dict[int, tuple[np.ndarray, np.ndarray]] = {}
+peaks_list: list[list[float]] = []
+roots_list: list[list[float]] = []
+ymax_list: list[float] = []
 
 #create parser
 parser = argparse.ArgumentParser(prog='spectro_plot',\
@@ -205,22 +205,19 @@ if args.startx is not None and args.endx is not None \
     sys.exit(1)
 
 #check if startx < 0 - exit if true
-if args.startx:
-    if args.startx < 0:
-        print("Warning. x0 < 0. Exit.")
-        sys.exit(1)
+if args.startx is not None and args.startx < 0:
+    print("Warning. x0 < 0. Exit.")
+    sys.exit(1)
 
 #check if endx < 0 - exit if true
-if args.endx:
-    if args.endx < 0:
-        print("Warning. x1 < 0. Exit.")
-        sys.exit(1)
+if args.endx is not None and args.endx < 0:
+    print("Warning. x1 < 0. Exit.")
+    sys.exit(1)
 
 #check if endy < 0 - exit if true
-if args.endy:
-    if args.endy < 0:
-        print("Warning. y1 < 0. Exis.")
-        sys.exit(1)
+if args.endy is not None and args.endy < 0:
+    print("Warning. y1 < 0. Exit.")
+    sys.exit(1)
 
 #check if shiftwn and shiftev are both defined - exit if true
 if args.shiftwn != 0 and args.shiftev != 0:
@@ -238,7 +235,6 @@ else:
     w = w_nm    #use linewidth in nm
 
 #parse input files
-data_list = list()
 spectra_list = list()
 shows_list = [show_single_lineshape,show_single_lineshape_area,
               show_conv_spectrum,show_sticks,show_exp_spectrum,
@@ -320,10 +316,10 @@ for i, row in df.iterrows():
         for index, wn in enumerate(xdata):
             temp_lineshape_sum.append(lineshape(ydata[index],plt_range_x,wn,w,
                                                 ls_gauss))
-            temp_range = np.sum(temp_lineshape_sum,axis=0)
-            temp_min = min(temp_range)
-            temp_max = max(temp_range)
-            intenslist = (ydata-temp_min)/(temp_max-temp_min)*th_fac
+        temp_range = np.sum(temp_lineshape_sum,axis=0)
+        temp_min = min(temp_range)
+        temp_max = max(temp_range)
+        intenslist = (ydata-temp_min)/(temp_max-temp_min)*th_fac
 
         #color palette plot single lineshape function
         th_palette = sns.color_palette(color_palette, len(xdata))
@@ -353,16 +349,14 @@ for i, row in df.iterrows():
         #plot the TD-DFT spectrum
         if show_conv_spectrum:
             #use the lineshape for peak detection
-            xdata_list.append(plt_range_x)
-            ydata_list.append(plt_range_lineshape_sum_y)
+            plot_data[i] = (plt_range_x, plt_range_lineshape_sum_y)
             ax.plot(plt_range_x,plt_range_lineshape_sum_y,color=palette[2],
                     linewidth=lw,label=label_tddft)
 
         if show_sticks:
             if not show_conv_spectrum:
                 #use the sticks for peak detection
-                xdata_list.append(xdata)
-                ydata_list.append(intenslist)
+                plot_data[i] = (xdata, intenslist)
             ax.stem(xdata,intenslist,linefmt="dimgrey",markerfmt=" ",
                     basefmt=" ",label=label_sticks)
 
@@ -370,8 +364,7 @@ for i, row in df.iterrows():
     if row["ext"] == ".asc":
         xdata = row["xdata_plot"]
         ydata = normalization(row["ydata"])*ex_fac
-        xdata_list.append(xdata)
-        ydata_list.append(ydata)
+        plot_data[i] = (xdata, ydata)
         if show_exp_spectrum:
             ax.plot(xdata,ydata,color=palette[0],linewidth=lw,
                     label=label_expt)
@@ -380,13 +373,12 @@ for i, row in df.iterrows():
     if row["ext"] == ".spectrum":
         xdata = row["xdata_plot"]
         ydata = normalization(row["ydata"])*esd_fac
-        xdata_list.append(xdata)
-        ydata_list.append(ydata)
+        plot_data[i] = (xdata, ydata)
         if show_esd_spectrum:
             ax.plot(xdata,ydata,color=palette[1],linewidth=lw,
                     label=label_roots)
     #ESD roots
-    if re.search(".spectrum.root\d+",row["ext"]):
+    if re.search(r"\.spectrum\.root\d+", row["ext"]):
         xdata = row["xdata_plot"]
         ydata = row["ydata"]
         index = row["root_number"]-1
@@ -395,8 +387,7 @@ for i, row in df.iterrows():
         temp_min = min(temp_range)
         temp_max = max(temp_range)
         intenslist = (ydata-temp_min)/(temp_max-temp_min)*esd_fac
-        xdata_list.append(xdata)
-        ydata_list.append(intenslist)
+        plot_data[i] = (xdata, intenslist)
 
         #color palette plot single root
         esd_palette = sns.color_palette(color_palette,df["root_number"].max())
@@ -428,27 +419,19 @@ if show_minor_ticks:
     ax.minorticks_on()
 
 #if startx argument is given - x-axis range
-if args.startx:
+if args.startx is not None:
     xlim_autostart = args.startx
-#if startx argument is not given or zero - x-axis range
+#startx from data
 else:
-    if args.startx == 0:
-        xlim_autostart = 0
-    #startx from data
-    else:
-        xlim_autostart = rounddown(df["xdata_plot_min"].min(),ev_plot,wn_plot,
-                                   nm_plot)
+    xlim_autostart = rounddown(df["xdata_plot_min"].min(),ev_plot,wn_plot,
+                               nm_plot)
 
-#if endx argument is giver - x-axis range
-if args.endx:
+#if endx argument is given - x-axis range
+if args.endx is not None:
     xlim_autoend = args.endx
-#if endx argument is not given or zero - x-axis range
+# auto endx from data
 else:
-    if args.endx == 0:
-        xlim_autoend = 0
-    # auto endx from data
-    else:
-        xlim_autoend = roundup(max(plt_range_x),ev_plot,wn_plot,nm_plot)
+    xlim_autoend = roundup(max(plt_range_x),ev_plot,wn_plot,nm_plot)
 
 #x should not be below zero - x-axis range
 if xlim_autostart < 0:
@@ -459,11 +442,13 @@ else:
 #y-axis range - user-defined or dynamic y range
 xmin=ax.get_xlim()[0]   #get recent xlim min
 xmax=ax.get_xlim()[1]   #get recent xlim max
-df['plt_range_x'] = xdata_list
-df['plt_range_y'] = ydata_list
+df['plt_range_x'] = df.index.map(lambda i: plot_data.get(i, (None, None))[0])
+df['plt_range_y'] = df.index.map(lambda i: plot_data.get(i, (None, None))[1])
 for index, row in df.iterrows():
     full_xrange = row['plt_range_x']
     full_yrange = row['plt_range_y']
+    if full_xrange is None:
+        continue
     if xmin > xmax:
         i_x = [i for i,v in enumerate(full_xrange) \
                 if v > xmax and v < xmin ]
@@ -475,14 +460,14 @@ for index, row in df.iterrows():
     ymax_list.append(max(yrange))
 
     #peaks detection for labeling
-    if show_label_peaks and not re.search(".spectrum.root\d+",row["ext"]):
+    if show_label_peaks and not re.search(r"\.spectrum\.root\d+", row["ext"]):
         #peaks detection
         peaks , _ = find_peaks(yrange,prominence=0.01)
         for j, peak_j in enumerate(peaks):
             peaks_list.append([xrange[peak_j],yrange[peak_j]])
 
     #roots detection for labeling
-    if show_label_roots and re.search(".spectrum.root\d+",row["ext"]):
+    if show_label_roots and re.search(r"\.spectrum\.root\d+", row["ext"]):
         #root peaks detection
         peaks , _ = find_peaks(yrange,prominence=0.01)
         xp_root = [xrange[i] for i in peaks]
@@ -492,7 +477,7 @@ for index, row in df.iterrows():
             y_pos = np.average(yp_root)
             roots_list.append([row["root_number"],x_pos,y_pos])
 
-if args.endy:
+if args.endy is not None:
     #user-defined y range
     ylim_max = args.endy
 else:
@@ -538,7 +523,7 @@ ax.tick_params(which='minor',length=minor_tick)
 
 #show grid
 if show_grid:
-    ax.grid(True,whick='major',axis='x',color='black',
+    ax.grid(True,which='major',axis='x',color='black',
             linestyle='dotted',linewidth=0.5)
 
 #acs format

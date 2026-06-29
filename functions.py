@@ -1,34 +1,36 @@
 #!/usr/bin/python3
 import sys                              #sys files processing
 import re                               #regex
+from typing import Optional
 import numpy as np                      #element-wise tensor processing
 import pandas as pd                     #dataframe processing
 from global_constants import npt_nm, npt_wn, npt_ev, conv_wntoev
 
-def show_plots(ext,s):
+def show_plots(ext: str, s: list[bool]) -> Optional[bool]:
     #check if the file is needed for the plot asked by the user
     if ext == ".out" and not (s[0] or s[1] or s[2] or s[3]):
         return True
     elif ext == ".asc" and not s[4]:
         return True
-    elif (ext == ".spectrum" or re.search(".spectrum.root\d+",ext)) and \
+    elif (ext == ".spectrum" or re.search(r"\.spectrum\.root\d+", ext)) and \
             not (s[5] or s[6]):
         return True
+    return None
 
-def is_unique(s):
+def is_unique(s: pd.Series) -> bool:
     #check if all strings are the same 
     a = s.to_numpy()
-    return (a[0] == a).all()
+    return bool((a[0] == a).all())
 
-def rootSum(df):
-    #check if all the roots come from the same system - exit if true
+def rootSum(df: pd.DataFrame) -> pd.DataFrame:
+    #check if all the roots come from the same system - exit if not
     data = df[df["root_number"] > 0]
     if not is_unique(data["name"]):
         print("Warning. Roots from different systems. Exit.")
         sys.exit(1)
     else:
         name = data["name"].iloc[0]
-    #check if all the roots have the same xdata - exit if true
+    #check if all the roots have the same xdata - exit if not
     samex = [data["xdata"].iloc[0] == row["xdata"] for i,row in data.iterrows()]
     if not all(samex):
         print("Warning. Roots have different xdata. Exit.")
@@ -37,7 +39,7 @@ def rootSum(df):
         xdata = data["xdata"].iloc[0]
     temp = np.array(data["ydata"].to_list())
     new_ydata = np.sum(temp,axis=0)
-    output = {
+    output: dict = {
         "path": "None",
         "name": name,
         "ext": ".spectrum",
@@ -47,7 +49,7 @@ def rootSum(df):
     }
     return pd.DataFrame([output])
 
-def plotxrange(df,x1,npt):
+def plotxrange(df: pd.DataFrame, x1: Optional[float], npt: int) -> np.ndarray:
     #return the x range for td-dft
     #plotrange must start at 0 for peak detection
     xmax_data = df["xdata_plot_max"].max()
@@ -57,7 +59,7 @@ def plotxrange(df,x1,npt):
         maxrange = xmax_data
     return np.arange(0,maxrange,1/npt)
 
-def roundup(x,ev_plot,wn_plot,nm_plot):
+def roundup(x: float, ev_plot: bool, wn_plot: bool, nm_plot: bool) -> float:
     #round to next 1 or 10 or 100
     if ev_plot:
         return x if x % 1 == 0 else x + 1 - x % 1
@@ -65,8 +67,9 @@ def roundup(x,ev_plot,wn_plot,nm_plot):
         return x if x % 100 == 0 else x + 100 - x % 100
     elif nm_plot:
         return x if x % 10 == 0 else x + 10 - x % 10
+    return x
 
-def rounddown(x,ev_plot,wn_plot,nm_plot):
+def rounddown(x: float, ev_plot: bool, wn_plot: bool, nm_plot: bool) -> float:
     #round to previous 1 or 10 or 100
     if ev_plot:
         return x if x % 1 == 0 else x - 1 - x % 1
@@ -74,8 +77,10 @@ def rounddown(x,ev_plot,wn_plot,nm_plot):
         return x if x % 100 == 0 else x - 100 - x % 100
     elif nm_plot:
         return x if x % 10 == 0 else x - 10 - x % 10
+    return x
 
-def lineshape(a,m,x,w,ls_gauss):
+def lineshape(a: float, m: np.ndarray, x: float, w: float,
+              ls_gauss: bool) -> np.ndarray:
     #calculation of the line shape
     # a = amplitude (max y, intensity)
     # x = position
@@ -88,15 +93,15 @@ def lineshape(a,m,x,w,ls_gauss):
         #Lorentzian line shape (default)
         return a/(1+(2*(m-x)/w)**2)
 
-def normalization(x):
+def normalization(x: np.ndarray) -> np.ndarray:
     #normalize the spectrum between 0 and 1
     return (x-np.amin(x))/(np.amax(x)-np.amin(x))
 
-def atLeastTwo(a,b,c):
+def atLeastTwo(a: bool, b: bool, c: bool) -> bool:
     #return true if at least two elements out of three are true
-    return a and (b or c) or (b and c);
+    return a and (b or c) or (b and c)
 
-def plotType(nm,wn,ev):
+def plotType(nm: bool, wn: bool, ev: bool) -> Optional[tuple[str, int]]:
     #return the plot type and npt
     if nm:
         return "nm", npt_nm
@@ -104,24 +109,25 @@ def plotType(nm,wn,ev):
         return "wn", npt_wn
     if ev:
         return "ev", npt_ev
+    return None
 
-def wntonm(wn):
+def wntonm(wn: list[float]) -> list[float]:
     #cm**-1 to nm converter
     return [1/w*10**7 for w in wn]
 
-def wntoev(wn):
+def wntoev(wn: list[float]) -> list[float]:
     #cm**-1 to eV converter
     return [w/conv_wntoev for w in wn]
 
-def nmtown(wl):
+def nmtown(wl: list[float]) -> list[float]:
     #nm to cm**-1 converter
     return [1/w*10**7 for w in wl]
 
-def nmtoev(wl):
+def nmtoev(wl: list[float]) -> list[float]:
     #nm to eV converter
     return [1/w*10**7/conv_wntoev for w in wl]
 
-def unitConverter(data,ext,unit):
+def unitConverter(data: list[float], ext: str, unit: str) -> list[float]:
     #convert the x-axis data to the right units (nm, cm**-1, eV)
     if ext == ".asc":
         if unit == "wn":
@@ -138,7 +144,7 @@ def unitConverter(data,ext,unit):
         else:
             return data
 
-def xdataPrep(df,unit,shift):
+def xdataPrep(df: pd.Series, unit: str, shift: float) -> list[float]:
     #convert spectrum x-axis units and shift it if not experimental
     ext = df["ext"]
     if ext == ".asc":
@@ -147,7 +153,7 @@ def xdataPrep(df,unit,shift):
         data = [x + shift for x in df["xdata"]]
     return unitConverter(data,ext,unit)
 
-def xdatamin(df,w):
+def xdatamin(df: pd.Series, w: float) -> float:
     #find the x-axis minimum
     ext = df["ext"]
     data = df["xdata_plot"]
@@ -156,7 +162,7 @@ def xdatamin(df,w):
     else:
         return min(data)
 
-def xdatamax(df,w):
+def xdatamax(df: pd.Series, w: float) -> float:
     #find the x-axis maximum
     ext = df["ext"]
     data = df["xdata_plot"]

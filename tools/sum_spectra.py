@@ -37,7 +37,7 @@ for index,path in enumerate(args.filename):
         with open(filename_root, "r") as input_file:
             for line in input_file:
                 #start extract text
-                if re.search("\d\s{1,}\d",line):
+                if re.search(r"\d\s{1,}\d", line):
                     energylist.append(float(line.strip().split()[0]))
                     intenslist.append(float(line.strip().split()[1]))
                     fclist.append(float(line.strip().split()[2]))

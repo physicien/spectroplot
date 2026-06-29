@@ -1,7 +1,7 @@
 #global constants
 #plot config section - configure here
 th_fac = 1.00                       #factor of the focs obtained from TD-DFT
-esd_fac = 1.00                      #factor of the focs obtained from ESD module 
+esd_fac = 1.00                      #factor of the focs obtained from ESD
 ex_fac = 1.00                       #factor of the focs obtained from Expt 
 color_palette = "hls"               #color palette root/single line shape
 label_tddft = "TD-DFT"              #label td-dft convolution plot
