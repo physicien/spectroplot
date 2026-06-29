@@ -12,7 +12,7 @@ def show_plots(ext: str, s: list[bool]) -> Optional[bool]:
         return True
     elif ext == ".asc" and not s[4]:
         return True
-    elif (ext == ".spectrum" or re.search(r"\.spectrum\.root\d+", ext)) and \
+    elif (ext == ".spectrum" or re.search(r"\.spectrum\.root\d+$", ext)) and \
             not (s[5] or s[6]):
         return True
     return None

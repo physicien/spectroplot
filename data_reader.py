@@ -33,7 +33,7 @@ class SpectrumData:
 
     def read_root(self) -> int:
         fext = self.filetype
-        if re.search(r"\.spectrum\.root\d+", fext):
+        if re.search(r"\.spectrum\.root\d+$", fext):
             return int(next(re.finditer(r'\d+$', fext)).group(0))
         return 0
 
@@ -124,7 +124,7 @@ class SpectrumData:
                 print(f"'{fpath}' not found")
                 sys.exit(1)
 
-        elif fext == '.spectrum' or re.search(r"\.spectrum\.root\d+", fext):
+        elif fext == '.spectrum' or re.search(r"\.spectrum\.root\d+$", fext):
             try:
                 xlist, ylist = self.read_spectrum()
             #file not found -> exit here

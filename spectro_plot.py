@@ -279,8 +279,10 @@ data_list = sorted(spectra_list, key=lambda d: float(d["root_number"]))
 df = pd.DataFrame(data_list)
 
 #if possible, add the sum of all the ESD roots
+root_sum = None
 if not df[df["root_number"] > 0].empty:
-    df = pd.concat([df,rootSum(df)],ignore_index=True)
+    root_sum = rootSum(df)
+    df = pd.concat([df, root_sum], ignore_index=True)
 
 #data processing for the plots
 df["xdata_plot"] = df.apply(xdataPrep,axis=1,unit=plot_type,shift=shift)
@@ -393,12 +395,12 @@ for i, row in df.iterrows():
             ax.plot(xdata,ydata,color=palette[1],linewidth=lw,
                     label=label_roots)
     #ESD roots
-    if re.search(r"\.spectrum\.root\d+", row["ext"]):
+    if re.search(r"\.spectrum\.root\d+$", row["ext"]):
         xdata = row["xdata_plot"]
         ydata = row["ydata"]
         index = row["root_number"]-1
         #normalization of the ESD roots
-        temp_range = rootSum(df)["ydata"][0]
+        temp_range = root_sum["ydata"][0]
         temp_min = min(temp_range)
         temp_max = max(temp_range)
         intenslist = (ydata-temp_min)/(temp_max-temp_min)*esd_fac
@@ -427,7 +429,6 @@ else:
 #label y axis
 ax.set_ylabel(y_label)
 ax.get_yaxis().set_ticks([])    #remove ticks from y axis
-#plt.tight_layout()              #tight layout
 
 #show minor ticks
 if show_minor_ticks:
@@ -475,14 +476,14 @@ for index, row in df.iterrows():
     ymax_list.append(max(yrange))
 
     #peaks detection for labeling
-    if show_label_peaks and not re.search(r"\.spectrum\.root\d+", row["ext"]):
+    if show_label_peaks and not re.search(r"\.spectrum\.root\d+$", row["ext"]):
         #peaks detection
         peaks , _ = find_peaks(yrange,prominence=0.01)
         for j, peak_j in enumerate(peaks):
             peaks_list.append([xrange[peak_j],yrange[peak_j]])
 
     #roots detection for labeling
-    if show_label_roots and re.search(r"\.spectrum\.root\d+", row["ext"]):
+    if show_label_roots and re.search(r"\.spectrum\.root\d+$", row["ext"]):
         #root peaks detection
         peaks , _ = find_peaks(yrange,prominence=0.01)
         xp_root = [xrange[i] for i in peaks]
@@ -543,8 +544,6 @@ if show_grid:
 
 #acs format
 if acs_format:
-#    ax.get_yaxis().set_visible(False)
-#    ax.spines[['top','left','right']].set_visible(False)
     ax.spines[['top','right']].set_visible(False)
 
 #tight layout
