@@ -33,6 +33,84 @@ peaks_list: list[list[float]] = []
 roots_list: list[list[float]] = []
 ymax_list: list[float] = []
 
+
+def _plot_tddft(ax, row, i, plt_range_x, w, ls_gauss, palette, lw):
+    lineshape_sum = []
+    temp_lineshape_sum = []
+    xdata = row["xdata_plot"]
+    ydata = row["ydata"]
+
+    for index, wn in enumerate(xdata):
+        temp_lineshape_sum.append(lineshape(ydata[index], plt_range_x, wn, w,
+                                            ls_gauss))
+    temp_range = np.sum(temp_lineshape_sum, axis=0)
+    temp_min = min(temp_range)
+    temp_max = max(temp_range)
+    intenslist = (ydata - temp_min) / (temp_max - temp_min) * th_fac
+
+    th_palette = sns.color_palette(color_palette, len(xdata))
+    for index, wn in enumerate(xdata):
+        if show_single_lineshape:
+            ax.plot(plt_range_x,
+                    lineshape(intenslist[index], plt_range_x, wn, w, ls_gauss),
+                    color=th_palette[index], alpha=0.5)
+        if show_single_lineshape_area:
+            ax.fill_between(plt_range_x,
+                            lineshape(intenslist[index], plt_range_x, wn, w,
+                                      ls_gauss),
+                            color=th_palette[index], alpha=0.5)
+        if show_conv_spectrum:
+            lineshape_sum.append(lineshape(intenslist[index], plt_range_x, wn,
+                                           w, ls_gauss))
+
+    if show_conv_spectrum:
+        plt_range_lineshape_sum_y = np.sum(lineshape_sum, axis=0)
+        plot_data[i] = (plt_range_x, plt_range_lineshape_sum_y)
+        ax.plot(plt_range_x, plt_range_lineshape_sum_y, color=palette[2],
+                linewidth=lw, label=label_tddft)
+
+    if show_sticks:
+        if not show_conv_spectrum:
+            plot_data[i] = (xdata, intenslist)
+        ax.stem(xdata, intenslist, linefmt="dimgrey", markerfmt=" ",
+                basefmt=" ", label=label_sticks)
+
+
+def _plot_experimental(ax, row, i, palette, lw):
+    xdata = row["xdata_plot"]
+    ydata = normalization(row["ydata"]) * ex_fac
+    plot_data[i] = (xdata, ydata)
+    if show_exp_spectrum:
+        ax.plot(xdata, ydata, color=palette[0], linewidth=lw,
+                label=label_expt)
+
+
+def _plot_esd(ax, row, i, palette, lw):
+    xdata = row["xdata_plot"]
+    ydata = normalization(row["ydata"]) * esd_fac
+    plot_data[i] = (xdata, ydata)
+    if show_esd_spectrum:
+        ax.plot(xdata, ydata, color=palette[1], linewidth=lw,
+                label=label_roots)
+
+
+def _plot_esd_root(ax, row, i, root_sum, lw):
+    xdata = row["xdata_plot"]
+    ydata = row["ydata"]
+    index = row["root_number"] - 1
+    temp_range = root_sum["ydata"][0]
+    temp_min = min(temp_range)
+    temp_max = max(temp_range)
+    intenslist = (ydata - temp_min) / (temp_max - temp_min) * esd_fac
+    plot_data[i] = (xdata, intenslist)
+
+    esd_palette = sns.color_palette(color_palette,
+                                    df["root_number"].max())
+    if show_single_root_area:
+        ax.fill_between(xdata, intenslist, color=esd_palette[index],
+                        alpha=0.5)
+
+
 #create parser
 parser = argparse.ArgumentParser(prog='spectro_plot',\
         description='Easily plor optical spectra from orca.out,\
@@ -322,96 +400,14 @@ plt_range_x = plotxrange(df,args.endx,npt)
 
 #All the plots
 for i, row in df.iterrows():
-    #TD-DFT
     if row["ext"] == ".out":
-        lineshape_sum = list()
-        temp_lineshape_sum = list()
-        xdata = row["xdata_plot"]
-        ydata = row["ydata"]
-        #normalization of the TD-DFT
-        for index, wn in enumerate(xdata):
-            temp_lineshape_sum.append(lineshape(ydata[index],plt_range_x,wn,w,
-                                                ls_gauss))
-        temp_range = np.sum(temp_lineshape_sum,axis=0)
-        temp_min = min(temp_range)
-        temp_max = max(temp_range)
-        intenslist = (ydata-temp_min)/(temp_max-temp_min)*th_fac
-
-        #color palette plot single lineshape function
-        th_palette = sns.color_palette(color_palette, len(xdata))
-        #plot single lineshape function for every frequency
-        #generate summation of single lineshape functions
-        for index, wn in enumerate(xdata):
-            #single lineshape function line plot
-            if show_single_lineshape:
-                ax.plot(plt_range_x,
-                        lineshape(intenslist[index],plt_range_x,wn,w,ls_gauss),
-                        color=th_palette[index],alpha=0.5)
-            #single lineshape function filled plot
-            if show_single_lineshape_area:
-                ax.fill_between(plt_range_x,
-                                lineshape(intenslist[index],plt_range_x,wn,w,
-                                          ls_gauss),
-                                color=th_palette[index],alpha=0.5)
-            #sum of lineshape functions
-            if show_conv_spectrum:
-                lineshape_sum.append(lineshape(intenslist[index],plt_range_x,wn,
-                                               w,ls_gauss))
-
-        #y values of the lineshape summation /cm**-1
-        if show_conv_spectrum:
-            plt_range_lineshape_sum_y = np.sum(lineshape_sum,axis=0)
-
-        #plot the TD-DFT spectrum
-        if show_conv_spectrum:
-            #use the lineshape for peak detection
-            plot_data[i] = (plt_range_x, plt_range_lineshape_sum_y)
-            ax.plot(plt_range_x,plt_range_lineshape_sum_y,color=palette[2],
-                    linewidth=lw,label=label_tddft)
-
-        if show_sticks:
-            if not show_conv_spectrum:
-                #use the sticks for peak detection
-                plot_data[i] = (xdata, intenslist)
-            ax.stem(xdata,intenslist,linefmt="dimgrey",markerfmt=" ",
-                    basefmt=" ",label=label_sticks)
-
-    #EXPERIMENTAL
-    if row["ext"] == ".asc":
-        xdata = row["xdata_plot"]
-        ydata = normalization(row["ydata"])*ex_fac
-        plot_data[i] = (xdata, ydata)
-        if show_exp_spectrum:
-            ax.plot(xdata,ydata,color=palette[0],linewidth=lw,
-                    label=label_expt)
-
-    #ESD
-    if row["ext"] == ".spectrum":
-        xdata = row["xdata_plot"]
-        ydata = normalization(row["ydata"])*esd_fac
-        plot_data[i] = (xdata, ydata)
-        if show_esd_spectrum:
-            ax.plot(xdata,ydata,color=palette[1],linewidth=lw,
-                    label=label_roots)
-    #ESD roots
-    if re.search(r"\.spectrum\.root\d+$", row["ext"]):
-        xdata = row["xdata_plot"]
-        ydata = row["ydata"]
-        index = row["root_number"]-1
-        #normalization of the ESD roots
-        temp_range = root_sum["ydata"][0]
-        temp_min = min(temp_range)
-        temp_max = max(temp_range)
-        intenslist = (ydata-temp_min)/(temp_max-temp_min)*esd_fac
-        plot_data[i] = (xdata, intenslist)
-
-        #color palette plot single root
-        esd_palette = sns.color_palette(color_palette,df["root_number"].max())
-        #plot single lineshape function for every root
-        #single root filled plot
-        if show_single_root_area:
-            ax.fill_between(xdata,intenslist,color=esd_palette[index],
-                            alpha=0.5)
+        _plot_tddft(ax, row, i, plt_range_x, w, ls_gauss, palette, lw)
+    elif row["ext"] == ".asc":
+        _plot_experimental(ax, row, i, palette, lw)
+    elif row["ext"] == ".spectrum":
+        _plot_esd(ax, row, i, palette, lw)
+    elif re.search(r"\.spectrum\.root\d+$", row["ext"]):
+        _plot_esd_root(ax, row, i, root_sum, lw)
 
 #legend
 if show_legend:
