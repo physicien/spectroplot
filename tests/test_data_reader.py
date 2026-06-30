@@ -147,3 +147,40 @@ class TestSpectrumDataIR:
         x, y = self.sd.data
         assert abs(x[0] - 61.13) < 1e-2
         assert abs(y[0] - 0.00) < 1e-6
+
+
+class TestSpectrumDataVPT2:
+    def setup_method(self):
+        self.sd = SpectrumData(f"{DATA_DIR}/VPT2/VPT2_furan_vpt2.out")
+
+    def test_filetype(self):
+        assert self.sd.filetype == ".out"
+
+    def test_name(self):
+        assert self.sd.name == "VPT2_furan_vpt2"
+
+    def test_rootnumber(self):
+        assert self.sd.rootnumber == 0
+
+    def test_spectrum_type(self):
+        assert self.sd.spectrum_type == "vpt2"
+
+    def test_data_length(self):
+        x, y = self.sd.data
+        assert len(x) == len(y)
+        assert len(x) == 252
+
+    def test_first_fundamental(self):
+        x, y = self.sd.data
+        assert abs(x[0] - 601.909) < 1e-3
+        assert abs(y[0] - 0.000) < 1e-3
+
+    def test_second_fundamental(self):
+        x, y = self.sd.data
+        assert abs(x[1] - 619.255) < 1e-3
+        assert abs(y[1] - 21.056) < 1e-3
+
+    def test_first_overtone(self):
+        x, y = self.sd.data
+        assert abs(x[21] - 1204.60) < 1e-2
+        assert abs(y[21] - 0.01) < 1e-2

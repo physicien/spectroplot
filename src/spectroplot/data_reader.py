@@ -5,7 +5,7 @@ import re                           #regex
 from pathlib import Path            #path processing (replace os)
 from typing import Optional, Tuple
 from spectroplot.global_constants import (
-    specstring_start, specstring_end, ir_string,
+    specstring_start, specstring_end, ir_string, vpt2_string,
 )
 
 
@@ -21,6 +21,7 @@ class SpectrumData:
         self.filetype: str = self.read_ext()
         self.rootnumber: int = self.read_root()
         self.spectrum_type: str = ""
+        self.vpt2_nfund: int = 0
         self.data: list[list[float]] = self.read_data()
 
     def read_name(self) -> str:
@@ -94,9 +95,102 @@ class SpectrumData:
                     break
         return freqlist, intenslist
 
+    def read_vpt2(self) -> Tuple[list[float], list[float]]:
+        freqlist: list[float] = []
+        intenslist: list[float] = []
+
+        with open(self.path, 'r') as file:
+            lines = file.readlines()
+
+        # 1. Parse "Fundamental transitions" table for anharmonic frequencies
+        fund_start: Optional[int] = None
+        for i, line in enumerate(lines):
+            if 'Fundamental transitions' in line:
+                fund_start = i
+                break
+
+        if fund_start is None:
+            print("Warning: No VPT2 fundamental transitions found")
+            return freqlist, intenslist
+
+        fund_data: dict[int, float] = {}
+        for line in lines[fund_start + 4:]:
+            if line.strip().startswith('---'):
+                break
+            parts = line.strip().split()
+            if len(parts) >= 3:
+                try:
+                    mode = int(parts[0])
+                    v_fund = float(parts[2])
+                    fund_data[mode] = v_fund
+                except ValueError:
+                    continue
+
+        # 2. Parse last "IR Intensities" section for intensities
+        ir_start: Optional[int] = None
+        for i in range(len(lines) - 1, -1, -1):
+            if 'IR Intensities' in lines[i]:
+                ir_start = i
+                break
+
+        if ir_start is None:
+            print("Warning: No IR Intensities found in VPT2 output")
+            return freqlist, intenslist
+
+        ir_intensities: dict[int, float] = {}
+        for line in lines[ir_start + 5:]:
+            stripped = line.strip()
+            if not stripped or stripped.startswith('-') \
+                    or stripped.startswith('Calculate'):
+                break
+            parts = stripped.split()
+            if len(parts) >= 7:
+                try:
+                    mode = int(parts[0])
+                    intensity = float(parts[2])
+                    ir_intensities[mode] = intensity
+                except ValueError:
+                    continue
+
+        # 3. Match fundamental mode N with IR intensity at mode N+6
+        self.vpt2_nfund = len(fund_data)
+        for mode, v_fund in fund_data.items():
+            ir_mode = mode + 6
+            if ir_mode in ir_intensities:
+                freqlist.append(v_fund)
+                intenslist.append(ir_intensities[ir_mode])
+
+        # 4. Parse "Overtones and combination bands" section
+        overt_start: Optional[int] = None
+        for i, line in enumerate(lines):
+            if 'Overtones and combination bands' in line:
+                overt_start = i
+                break
+
+        if overt_start is not None:
+            for line in lines[overt_start + 4:]:
+                stripped = line.strip()
+                if not stripped or stripped.startswith('='):
+                    break
+                parts = stripped.split()
+                if len(parts) >= 6:
+                    try:
+                        if parts[0].isdigit() and parts[1].isdigit():
+                            freq = float(parts[2])
+                            intensity = float(parts[4])
+                            freqlist.append(freq)
+                            intenslist.append(intensity)
+                    except (ValueError, IndexError):
+                        continue
+
+        return freqlist, intenslist
+
     def read_out(self) -> Tuple[list[float], list[float]]:
         with open(self.path, 'r') as file:
             content = file.read()
+        if vpt2_string in content:
+            self.spectrum_type = "vpt2"
+            return self.read_vpt2()
         if ir_string in content:
             self.spectrum_type = "ir"
             return self.read_ir()

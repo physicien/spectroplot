@@ -9,6 +9,8 @@ label_sticks = "VEE"                #label td-dft sticks plot
 label_expt = "Expt."                #label experimental plot
 label_roots = "ESD"                 #label root convolution plot
 label_ir = "IR"                     #label ir spectrum plot
+label_vpt2 = "VPT2"                 #label vpt2 spectrum plot
+label_vpt2_overt = "overt. + comb." #label vpt2 overtones and combination bands
 
 show_single_lineshape = False       #show single line shape functions if True
 show_single_lineshape_area = False  #show single line shape areas if True
@@ -41,6 +43,8 @@ output_name = "spectrum"                #output file name
 
 
 #CONSTANTS SECTION - go away if you don't know what you're doing
+#start reading orca.out for VPT2 data from here
+vpt2_string = 'ORCA VPT2/GVPT2 Analysis' #start reading orca.out for VPT2 data
 #start reading orca.out for IR data from here
 ir_string = 'IR SPECTRUM'                #start reading orca.out for IR data
 #start reading orca.out for uv data from here
