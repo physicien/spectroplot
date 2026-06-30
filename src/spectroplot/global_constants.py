@@ -50,6 +50,7 @@ specstring_end = 'ABSORPTION SPECTRUM VIA TRANSITION VELOCITY DIPOLE MOMENTS'
 w_nm = 20       #w = line width for broadening - nm, FWHM
 w_wn = 1000     #w = line width for broadening - wave numbers, FWHM
 w_ev = 0.1      #w = line width for broadening - eV, FWHM
+w_ir = 5        #w = line width for broadening - IR, FWHM (cm**-1)
 npt_nm = 10     #npt = nb of pts per unit to calculate the line shape in nm
 npt_wn = 1      #npt = nb of pts per unit to calculate the line shape in cm**-1
 npt_ev = 1000   #npt = nb of pts per unit to calculate the line shape in eV

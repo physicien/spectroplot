@@ -84,8 +84,8 @@ spectroplot data/TD-DFT/UV_c60-Ih.out -o spectrum.png
 - `-n` , optional: do not save the spectrum
 - `-acs` , optional: format the plot to ACS publications standard format
 - `-o` `str` , optional: output filename (`.svg` default, supports `.png`/`.pdf`)
-- `-pnm` , optional: plot the wavelength (λ, nm) spectrum (default)
-- `-pwn` , optional: plot the wave number (energy, cm<sup>-1</sup>) spectrum
+- `-pnm` , optional: plot the wavelength (λ, nm) spectrum
+- `-pwn` , optional: plot the wave number (energy, cm<sup>-1</sup>) spectrum (default)
 - `-pev` , optional: plot the electron-volt (energy, eV) spectrum
 - `-lsg` , optional: use the gaussian line shape function (default is lorentzian line shape)
 - `-PL` , optional: use the PL Intensity y-axis label (default is Absorbance)

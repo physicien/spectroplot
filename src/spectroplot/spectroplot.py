@@ -20,7 +20,7 @@ from spectroplot.global_constants import (
     y_label, y_label_PL, y_label_ir,
     x_label_wn, x_label_ev, x_label_nm,
     a_label, figure_dpi, acs_w, acs_h, output_name,
-    conv_wntoev, w_nm, w_wn, w_ev,
+    conv_wntoev, w_nm, w_wn, w_ev, w_ir,
 )
 from spectroplot.functions import (
     atLeastTwo, plotType, show_plots, rootSum,
@@ -180,14 +180,14 @@ def main():
 
     #plot the spectrum in nm
     parser.add_argument('-pnm','--plotnm',
-                        default=1,
+                        default=0,
                         action='store_true',
                         help='plot the spectrum in nm'
                         )
 
     #plot the spectrum in cm**-1
     parser.add_argument('-pwn','--plotwn',
-                        default=0,
+                        default=1,
                         action='store_true',
                         help='plot the spectrum in cm**-1'
                         )
@@ -276,10 +276,8 @@ def main():
     filename = args.output_name if Path(args.output_name).suffix \
                else f"{args.output_name}.svg"
     acs_format = args.acs_format        #ACS Publications figure format
-    nm_plot = args.plotnm               #wavelength plot /nm if True (default)
-    if args.plotwn or args.plotev:
-        nm_plot = not args.plotnm
-    wn_plot = args.plotwn               #wave number plot /cm**-1 if True
+    nm_plot = args.plotnm               #wavelength plot /nm if True
+    wn_plot = args.plotwn               #wave number plot /cm**-1 if True (default)
     ev_plot = args.plotev               #energy plot /eV if True
     ls_gauss = args.lineshape_gauss     #gaussian line shape if True
                                         #lorentzian line shape if False (default)
@@ -382,9 +380,10 @@ def main():
         print("Warning. You are requesting an empty plot. Exit.")
         sys.exit(1)
 
-    #select y-axis label based on input type
+    #select y-axis label and linewidth based on input type
     if ir_input:
         y_label = y_label_ir
+        w = w_ir
     elif args.axisPL:
         y_label = y_label_PL
 
