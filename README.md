@@ -13,6 +13,7 @@ Supported data types:
 - **ESD roots** (`.spectrum.rootX`): individual root contributions from ESD
 - **Experimental** (`.asc`): experimental spectra loaded as wavelength/intensity pairs
 - **IR** (`.out`): harmonic IR spectra from ORCA frequency calculations (auto-detected)
+- **Raman** (`.out`): Raman spectra from ORCA frequency calculations (auto-detected)
 - **VPT2** (`.out`): anharmonic VPT2-corrected IR spectra with overtones and combination bands (auto-detected)
 
 ### Install
@@ -93,6 +94,13 @@ spectroplot data/VPT2/VPT2_furan_vpt2.out -s -n -x0 0 -x1 6500
 
 ![VPT2 spectrum](examples/vpt2_spectrum.png)
 
+```console
+# Raman spectrum
+spectroplot data/Raman/RAM_c60-Ih_r.out -s -n -x0 200 -x1 1650
+```
+
+![Raman spectrum](examples/raman_spectrum.png)
+
 ### Command-line options
 
 - `filename` , required: filename (.out, .asc, .spectrum, .spectrum.rootX)
@@ -143,5 +151,3 @@ Based on `orca_uv` by [Sebastian Dechert](https://github.com/radi0sus/orca_uv)
 ## TO DO
 
 - Change the line color/style when the same type of data type is plotted multiple times.
-
-- Implement Raman spectra?
