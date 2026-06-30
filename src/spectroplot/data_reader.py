@@ -1,6 +1,7 @@
-#!/usr/bin/python3
-
+import logging
 import re                           #regex
+
+logger = logging.getLogger(__name__)
 from pathlib import Path            #path processing (replace os)
 from typing import Optional, Tuple
 from spectroplot.global_constants import (
@@ -41,6 +42,11 @@ class SpectrumData:
             return int(next(re.finditer(r'\d+$', fext)).group(0))
         return 0
 
+    def __repr__(self) -> str:
+        return (f"SpectrumData(name={self.name!r}, type={self.filetype!r}, "
+                f"spec_type={self.spectrum_type!r}, "
+                f"root={self.rootnumber}, npts={len(self.data[0])})")
+
     def read_out_abs(self) -> Tuple[list[float], list[float]]:
         #check for uv data in orca.out
         found_uv_section = False
@@ -66,7 +72,7 @@ class SpectrumData:
                         #only recognize lines that start with number
                         #split line into 3 lists mode, energy, intensities
                         #line should start with a number
-                        if re.search(r"\d\s+\d", line):
+                        if re.search(r"^\s*\d+\s+\d", line):
                             energylist.append(float(line.strip().split()[l1]))
                             intenslist.append(float(line.strip().split()[l2]))
                     else:
@@ -125,7 +131,7 @@ class SpectrumData:
                 break
 
         if fund_start is None:
-            print("Warning: No VPT2 fundamental transitions found")
+            logger.warning("No VPT2 fundamental transitions found")
             return freqlist, intenslist
 
         fund_data: dict[int, float] = {}
@@ -149,7 +155,7 @@ class SpectrumData:
                 break
 
         if ir_start is None:
-            print("Warning: No IR Intensities found in VPT2 output")
+            logger.warning("No IR Intensities found in VPT2 output")
             return freqlist, intenslist
 
         ir_intensities: dict[int, float] = {}
@@ -233,7 +239,7 @@ class SpectrumData:
         with open(self.path, 'r') as file:
             for line in file:
                 #start extract text
-                if re.search(r"\d\s+\d", line):
+                if re.search(r"^\s*\d", line):
                     energylist.append(float(line.strip().split()[0]))
                     intenslist.append(float(line.strip().split()[1]))
 

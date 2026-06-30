@@ -31,14 +31,9 @@ from spectroplot.functions import (
 )
 from spectroplot.data_reader import SpectrumData    #spectrum data parser
 
-#global containers for peak/ymax data keyed by row index
-plot_data: dict[int, tuple[np.ndarray, np.ndarray]] = {}
-peaks_list: list[list[float]] = []
-roots_list: list[list[float]] = []
-ymax_list: list[float] = []
 
-
-def _plot_tddft(ax, row, i, plt_range_x, w, ls_gauss, palette, lw):
+def _plot_tddft(ax, row, i, plt_range_x, w, ls_gauss, palette, lw,
+                plot_data):
     lineshape_sum = []
     temp_lineshape_sum = []
     xdata = row["xdata_plot"]
@@ -80,7 +75,7 @@ def _plot_tddft(ax, row, i, plt_range_x, w, ls_gauss, palette, lw):
                 basefmt=" ", label=label_sticks)
 
 
-def _plot_experimental(ax, row, i, palette, lw):
+def _plot_experimental(ax, row, i, palette, lw, plot_data):
     xdata = row["xdata_plot"]
     ydata = normalization(row["ydata"]) * ex_fac
     plot_data[i] = (xdata, ydata)
@@ -89,7 +84,7 @@ def _plot_experimental(ax, row, i, palette, lw):
                 label=label_expt)
 
 
-def _plot_esd(ax, row, i, palette, lw):
+def _plot_esd(ax, row, i, palette, lw, plot_data):
     xdata = row["xdata_plot"]
     ydata = normalization(row["ydata"]) * esd_fac
     plot_data[i] = (xdata, ydata)
@@ -98,7 +93,7 @@ def _plot_esd(ax, row, i, palette, lw):
                 label=label_roots)
 
 
-def _plot_esd_root(ax, row, i, root_sum, lw, df):
+def _plot_esd_root(ax, row, i, root_sum, lw, df, plot_data):
     xdata = row["xdata_plot"]
     ydata = row["ydata"]
     index = row["root_number"] - 1
@@ -116,7 +111,7 @@ def _plot_esd_root(ax, row, i, root_sum, lw, df):
 
 
 def _plot_vib(ax, row, i, plt_range_x, w, ls_gauss, palette, lw,
-              label, color_idx):
+              label, color_idx, plot_data):
     lineshape_sum = []
     xdata = row["xdata_plot"]
     ydata = row["ydata"]
@@ -139,17 +134,19 @@ def _plot_vib(ax, row, i, plt_range_x, w, ls_gauss, palette, lw,
                 basefmt=" ", label=label_sticks_vib)
 
 
-def _plot_ir(ax, row, i, plt_range_x, w, ls_gauss, palette, lw):
+def _plot_ir(ax, row, i, plt_range_x, w, ls_gauss, palette, lw, plot_data):
     _plot_vib(ax, row, i, plt_range_x, w, ls_gauss, palette, lw,
-              label_ir, 3)
+              label_ir, 3, plot_data)
 
 
-def _plot_raman(ax, row, i, plt_range_x, w, ls_gauss, palette, lw):
+def _plot_raman(ax, row, i, plt_range_x, w, ls_gauss, palette, lw,
+                plot_data):
     _plot_vib(ax, row, i, plt_range_x, w, ls_gauss, palette, lw,
-              label_raman, 5)
+              label_raman, 5, plot_data)
 
 
-def _plot_vpt2(ax, row, i, plt_range_x, w, ls_gauss, palette, lw):
+def _plot_vpt2(ax, row, i, plt_range_x, w, ls_gauss, palette, lw,
+               plot_data):
     lineshape_sum = []
     xdata = row["xdata_plot"]
     ydata = row["ydata"]
@@ -504,21 +501,26 @@ def main():
     plt_range_x = plotxrange(df,args.endx,npt)
 
     #All the plots
+    plot_data: dict[int, tuple[np.ndarray, np.ndarray]] = {}
     for i, row in df.iterrows():
         if row["ext"] == ".out" and row["spectrum_type"] == "ir":
-            _plot_ir(ax, row, i, plt_range_x, w, ls_gauss, palette, lw)
+            _plot_ir(ax, row, i, plt_range_x, w, ls_gauss, palette, lw,
+                     plot_data)
         elif row["ext"] == ".out" and row["spectrum_type"] == "raman":
-            _plot_raman(ax, row, i, plt_range_x, w, ls_gauss, palette, lw)
+            _plot_raman(ax, row, i, plt_range_x, w, ls_gauss, palette, lw,
+                        plot_data)
         elif row["ext"] == ".out" and row["spectrum_type"] == "vpt2":
-            _plot_vpt2(ax, row, i, plt_range_x, w, ls_gauss, palette, lw)
+            _plot_vpt2(ax, row, i, plt_range_x, w, ls_gauss, palette, lw,
+                       plot_data)
         elif row["ext"] == ".out":
-            _plot_tddft(ax, row, i, plt_range_x, w, ls_gauss, palette, lw)
+            _plot_tddft(ax, row, i, plt_range_x, w, ls_gauss, palette, lw,
+                        plot_data)
         elif row["ext"] == ".asc":
-            _plot_experimental(ax, row, i, palette, lw)
+            _plot_experimental(ax, row, i, palette, lw, plot_data)
         elif row["ext"] == ".spectrum":
-            _plot_esd(ax, row, i, palette, lw)
+            _plot_esd(ax, row, i, palette, lw, plot_data)
         elif re.search(r"\.spectrum\.root\d+$", row["ext"]):
-            _plot_esd_root(ax, row, i, root_sum, lw, df)
+            _plot_esd_root(ax, row, i, root_sum, lw, df, plot_data)
 
     #legend
     if show_legend:
@@ -562,6 +564,9 @@ def main():
         plt.xlim(xlim_autostart,xlim_autoend)
 
     #y-axis range - user-defined or dynamic y range
+    peaks_list: list[list[float]] = []
+    roots_list: list[list[float]] = []
+    ymax_list: list[float] = []
     xmin=ax.get_xlim()[0]   #get recent xlim min
     xmax=ax.get_xlim()[1]   #get recent xlim max
     df['plt_range_x'] = df.index.map(lambda i: plot_data.get(i, (None, None))[0])

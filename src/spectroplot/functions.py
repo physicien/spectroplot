@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 import re                               #regex
 from typing import Optional
 import numpy as np                      #element-wise tensor processing
