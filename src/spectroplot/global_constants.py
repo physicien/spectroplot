@@ -21,8 +21,6 @@ show_sticks = True                  #show the stick spectra if True
 show_exp_spectrum = True            #show the experimental spectra if True
 show_single_root_area = True        #show single ESD root area plot if True 
 show_esd_spectrum = True            #show the ESD spectra if True
-show_ir_spectrum = True             #show the IR spectra if True
-
 show_label_peaks = True             #show peak labels if True
 show_label_roots = True             #show root labels if True
 show_minor_ticks = True             #show minor ticks if True

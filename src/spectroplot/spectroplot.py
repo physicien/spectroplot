@@ -16,7 +16,7 @@ from spectroplot.global_constants import (
     label_sticks_vib,
     show_single_lineshape, show_single_lineshape_area,
     show_conv_spectrum, show_sticks, show_exp_spectrum,
-    show_esd_spectrum, show_single_root_area, show_ir_spectrum,
+    show_esd_spectrum, show_single_root_area,
     show_label_peaks, show_label_roots,
     show_minor_ticks, show_grid, show_legend, linear_locator,
     y_label, y_label_PL, y_label_ir, y_label_raman,
@@ -115,7 +115,8 @@ def _plot_esd_root(ax, row, i, root_sum, lw, df):
                         alpha=0.5)
 
 
-def _plot_ir(ax, row, i, plt_range_x, w, ls_gauss, palette, lw):
+def _plot_vib(ax, row, i, plt_range_x, w, ls_gauss, palette, lw,
+              label, color_idx):
     lineshape_sum = []
     xdata = row["xdata_plot"]
     ydata = row["ydata"]
@@ -128,37 +129,24 @@ def _plot_ir(ax, row, i, plt_range_x, w, ls_gauss, palette, lw):
     if show_conv_spectrum:
         plt_range_lineshape_sum_y = np.sum(lineshape_sum, axis=0)
         plot_data[i] = (plt_range_x, plt_range_lineshape_sum_y)
-        ax.plot(plt_range_x, plt_range_lineshape_sum_y, color=palette[3],
-                linewidth=lw, label=label_ir)
+        ax.plot(plt_range_x, plt_range_lineshape_sum_y,
+                color=palette[color_idx], linewidth=lw, label=label)
 
     if show_sticks:
         if not show_conv_spectrum:
             plot_data[i] = (xdata, ydata)
         ax.stem(xdata, ydata, linefmt="dimgrey", markerfmt=" ",
                 basefmt=" ", label=label_sticks_vib)
+
+
+def _plot_ir(ax, row, i, plt_range_x, w, ls_gauss, palette, lw):
+    _plot_vib(ax, row, i, plt_range_x, w, ls_gauss, palette, lw,
+              label_ir, 3)
 
 
 def _plot_raman(ax, row, i, plt_range_x, w, ls_gauss, palette, lw):
-    lineshape_sum = []
-    xdata = row["xdata_plot"]
-    ydata = row["ydata"]
-
-    for index, wn in enumerate(xdata):
-        if show_conv_spectrum:
-            lineshape_sum.append(lineshape(ydata[index], plt_range_x, wn, w,
-                                           ls_gauss))
-
-    if show_conv_spectrum:
-        plt_range_lineshape_sum_y = np.sum(lineshape_sum, axis=0)
-        plot_data[i] = (plt_range_x, plt_range_lineshape_sum_y)
-        ax.plot(plt_range_x, plt_range_lineshape_sum_y, color=palette[5],
-                linewidth=lw, label=label_raman)
-
-    if show_sticks:
-        if not show_conv_spectrum:
-            plot_data[i] = (xdata, ydata)
-        ax.stem(xdata, ydata, linefmt="dimgrey", markerfmt=" ",
-                basefmt=" ", label=label_sticks_vib)
+    _plot_vib(ax, row, i, plt_range_x, w, ls_gauss, palette, lw,
+              label_raman, 5)
 
 
 def _plot_vpt2(ax, row, i, plt_range_x, w, ls_gauss, palette, lw):
