@@ -150,5 +150,66 @@ Based on `orca_uv` by [Sebastian Dechert](https://github.com/radi0sus/orca_uv)
 
 ## TO DO
 
+### Planned features
 - Change the line color/style when the same type of data type is plotted multiple times.
 - Add transmittance mode (-tr/--transmittance) for IR/Raman/VPT2 spectra.
+
+### Bugs
+- B1: Convert ydata to np.ndarray explicitly in plot functions to avoid fragile implicit coercion and NaN on flat data
+- B2: Guard plotType() result against None return to prevent crash on unpack
+- B3: Handle IndexError from malformed .asc/.spectrum files (split()[1] without length check)
+- B4: Fix i_x undefined when xmin == xmax and empty i_x crash in peak detection block
+- B5: Handle mixed IR/Raman/VPT2 input — last-matching if overwrites y_label_use and linewidth
+- B6: Guard esd_palette access against IndexError when root_number.max() == 0
+
+### Code smells
+- S1: show_plots returns None instead of False
+- S2: is_unique crashes on empty Series
+- S3: Replace list == list with np.array_equal
+- S4: Compile root regex once in global_constants instead of 6 locations
+- S5: Rename df parameter to row (it's a pd.Series, not DataFrame)
+- S6: Fix plot_data type annotation — tuples can hold None
+- S7: Print warnings to stderr instead of stdout
+- S8: Decimal shift check against zero is fragile
+- S9: LinearLocator() with no args doesn't force tick count
+
+### Naming / docs
+- N1: Fix misleading comment about peak detection requiring x-start at 0
+- N2: Rename show_plots (returns True=skip, opposite of what name suggests)
+- N3: Rename a_label to label_rotation_angle
+- N4: Remove commented-out x_label_nm dead code
+
+### Performance
+- P1: read_out() reads entire file at once instead of line-by-line
+- P2: No early exit in read_ir/read_raman after IR/Raman section ends
+- P3: Python list comparison in hot loop; use np.array_equal
+
+### Imports / structure
+- I1: Logger in data_reader.py is unconfigured
+- I2: Logger placed between import groups
+- I3: Misleading shebang on non-executable module
+
+### Test coverage
+- T1: No unit test for show_plots()
+- T2: No unit test for is_unique()
+- T3: No unit test for rootSum()
+- T4: No unit tests for xdataPrep, xdatamin, xdatamax, plotxrange
+- T5: read_ir, read_raman, read_vpt2 not tested in isolation
+- T6: read_out_abs only exercises one ORCA version path
+- T7: No tests for show_* toggle combinations
+- T8: test_nonexistent_file_skipped doesn't check exit code
+- T9-T10: Use pytest.raises instead of try/except/else
+
+### Minor
+- M1: ORCA version check uses first char only (wrong for 10+)
+- M2: Hardcoded mode + 6 magic number in VPT2
+- M3: Hardcoded skip offsets +4/+5 in VPT2 parsing
+- M4: Fragile for...else: continue; break pattern
+- M5: Docstring says "strings" but works on any type
+- M6: Mutable module-level constants
+- M7: Unused loop variable i
+- M8: normalization returns NaN for constant input (division by zero)
+- M9: roundup/rounddown silently return x when no unit flag set
+- M10: read_name doesn't read, just parses path
+- M11: No version pins in pyproject.toml
+- M12: npt_wn=1 may produce jagged peaks for sharp lines
