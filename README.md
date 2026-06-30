@@ -1,24 +1,37 @@
 # `spectroplot`
 
-Plot UV/Vis spectrum from ORCA output file and much more. (**TO UPDATE**)
+Plot absorption and fluorescence spectra from ORCA output files, experimental data, and much more.
 
-<!-- ![show](examples/show-use3.gif) -->
-
-A Python 3 script for (hassle-free) plotting of absorption spectra from output files with peak detection and annotation.
+A Python 3 package for plotting optical spectra with peak detection and annotation.
 It combines the stick spectrum with the convoluted spectrum (lorentzian or gaussian line shape).
-The script supports energy (wave number or electron-volt, cm<sup>-1</sup> or eV) and wavelength (λ, nm) plots.
-The full spectrum or parts of the spectrum can be plotted. (**TO UPDATE**)
+The package supports energy (wave number or electron-volt, cm<sup>-1</sup> or eV) and wavelength (λ, nm) plots.
+The full spectrum or parts of the spectrum can be plotted.
+
+Supported data types:
+- **TD-DFT** (`.out`): absorption and fluorescence from ORCA time-dependent density functional theory calculations
+- **ESD** (`.spectrum`): absorption and fluorescence from ORCA excited state dynamics module
+- **ESD roots** (`.spectrum.rootX`): individual root contributions from ESD
+- **Experimental** (`.asc`): experimental spectra loaded as wavelength/intensity pairs
+
+### Install
+
+```console
+pip install .
+```
 
 ### Quick start
 
- Start the script with:
-
 ```console
-python3 orca-uv.py [OPTION] filename
+spectroplot [OPTION] filename
 ```
 
-it will save the plot as SVG :
-`spectrum.svg`
+or
+
+```console
+python3 -m spectroplot [OPTION] filename
+```
+
+It will save the plot as SVG: `spectrum.svg`
 
 ### Command-line options
 
@@ -26,7 +39,7 @@ it will save the plot as SVG :
 - `-s` , optional: shows the `matplotlib` window
 - `-n` , optional: do not save the spectrum
 - `-acs` , optional: format the plot to ACS publications standard format
-- `-o` `str` , optional: change the name of the savec spectrum
+- `-o` `str` , optional: change the name of the saved spectrum
 - `-pnm` , optional: plot the wavelength (λ, nm) spectrum (default)
 - `-pwn` , optional: plot the wave number (energy, cm<sup>-1</sup>) spectrum
 - `-pev` , optional: plot the electron-volt (energy, eV) spectrum
@@ -37,50 +50,28 @@ it will save the plot as SVG :
 - `-wev` `N` , optional: line width of the line shape for the eV scale (default is `N = 0.1`)
 - `-x0`  `N` , optional: start spectrum at N nm or N cm<sup>-1</sup> (`x0 => 0`)
 - `-x1`  `N` , optional: end spectrum at N nm or N cm<sup>-1</sup> (`x1 => 0`)
-- `-y1`  `N` , optional: end statically spectrum at N a.u. (`y1 => 0`)
+- `-y1`  `N` , optional: end statically spectrum at N arb. units (`y1 => 0`)
 - `-swn` `N` , optional: shift the spectrum by N cm<sup>-1</sup> (default is `N = 0`)
 - `-sev` `N` , optional: shift the spectrum by N eV (default is `N = 0`)
 
 ### Script options
 
-There are numerous ways to configure the spectrum in the script:
-Check `# plot config section - configure here` in the script. 
-You can even configure the script to plot of the single line shape functions. (**TO UPDATE**)
-
-### Code options
-
-Colors, line thickness, line styles, level of peak detection and 
-more can be changed in the code directly. (**TO UPDATE**)
+There are numerous ways to configure the spectrum.
+Check `# plot config section - configure here` in `src/spectroplot/global_constants.py`.
+You can even configure the script to plot of the single line shape functions.
 
 ### Remarks
 
-The SVG file will be replaced everytime you start the script with the same output file. 
-If you want to keep the file, you have to rename it. 
-The data are taken from the section "ABSORPTION SPECTRUM VIA TRANSITION ELECTRIC DIPOLE MOMENTS". (**TO UPDATE**)
-
-## Examples:
-
-<!--
-![Example 1](examples/example1.png)
-![Example 2](examples/example2.png)
-![Example 3](examples/example3.png)
--->
+The SVG file will be replaced every time you run the script with the same output name. 
+For TD-DFT data, the absorption spectrum is taken from the section 
+"ABSORPTION SPECTRUM VIA TRANSITION ELECTRIC DIPOLE MOMENTS" in the ORCA output.
 
 ## Requirements
-- `sys`
-
-- `re`
-
-- `argparse`
 
 - `numpy`
-
 - `pandas`
-  
 - `matplotlib`
-
 - `seaborn`
-
 - `scipy`
 
 ## Contributor
@@ -89,14 +80,12 @@ Contributed by Emmanuel Bourret
 
 Based on `orca_uv` by [Sebastian Dechert](https://github.com/radi0sus/orca_uv)
 
-## TO TO
+## TO DO
 
 - Change the line color/style when the same type of data type is plotted multiple times.
 
 - Implement IR spectra (intensity and transmittance) as well as their VPT2 corrections.
 
 - Implement Raman spectra?
-
-- Update `README.md`
 
 - Add examples
