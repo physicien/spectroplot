@@ -554,10 +554,15 @@ def main():
 
         #peaks detection for labeling
         if show_label_peaks and not re.search(r"\.spectrum\.root\d+$", row["ext"]):
-            #peaks detection
-            peaks , _ = find_peaks(yrange,prominence=0.01)
+            #peaks detection: skip peaks too close (<1% of x-range) or too weak
+            x_range_span = xrange[-1] - xrange[0]
+            dist_samples = max(1, int(x_range_span * npt * 0.01))
+            peaks, _ = find_peaks(yrange, prominence=0.01,
+                                  distance=dist_samples)
+            y_max = max(yrange) if len(yrange) else 1
             for j, peak_j in enumerate(peaks):
-                peaks_list.append([xrange[peak_j],yrange[peak_j]])
+                if yrange[peak_j] > 0.02 * y_max:
+                    peaks_list.append([xrange[peak_j],yrange[peak_j]])
 
         #roots detection for labeling
         if show_label_roots and re.search(r"\.spectrum\.root\d+$", row["ext"]):
