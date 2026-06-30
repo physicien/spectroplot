@@ -39,7 +39,7 @@ It will save the plot as SVG: `spectrum.svg`
 - `-s` , optional: shows the `matplotlib` window
 - `-n` , optional: do not save the spectrum
 - `-acs` , optional: format the plot to ACS publications standard format
-- `-o` `str` , optional: change the name of the saved spectrum
+- `-o` `str` , optional: output filename (`.svg` default, supports `.png`/`.pdf`)
 - `-pnm` , optional: plot the wavelength (λ, nm) spectrum (default)
 - `-pwn` , optional: plot the wave number (energy, cm<sup>-1</sup>) spectrum
 - `-pev` , optional: plot the electron-volt (energy, eV) spectrum

@@ -113,6 +113,7 @@ def _plot_esd_root(ax, row, i, root_sum, lw):
 
 
 def main():
+    global w_nm, w_wn, w_ev, y_label
     #create parser
     parser = argparse.ArgumentParser(prog='spectroplot',\
             description='Easily plor optical spectra from orca.out,\
