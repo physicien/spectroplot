@@ -1,13 +1,13 @@
 import numpy as np
 import sys
-sys.path.insert(0, "..")
+sys.path.insert(0, "src")
 
-from functions import (
+from spectroplot.functions import (
     wntonm, wntoev, nmtown, nmtoev,
     lineshape, normalization, atLeastTwo,
     plotType, roundup, rounddown, unitConverter,
 )
-from global_constants import conv_wntoev
+from spectroplot.global_constants import conv_wntoev
 
 
 class TestUnitConverters:

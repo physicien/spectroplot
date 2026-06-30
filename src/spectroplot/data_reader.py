@@ -4,7 +4,7 @@ import sys                          #sys files processing
 import re                           #regex
 from pathlib import Path            #path processing (replace os)
 from typing import Optional, Tuple
-from global_constants import specstring_start, specstring_end
+from spectroplot.global_constants import specstring_start, specstring_end
 
 
 class SpectrumData:

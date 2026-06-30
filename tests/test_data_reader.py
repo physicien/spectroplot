@@ -1,7 +1,7 @@
 import sys
-sys.path.insert(0, "..")
+sys.path.insert(0, "src")
 
-from data_reader import SpectrumData
+from spectroplot.data_reader import SpectrumData
 
 
 DATA_DIR = "data"

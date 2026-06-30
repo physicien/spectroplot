@@ -4,7 +4,7 @@ import re                               #regex
 from typing import Optional
 import numpy as np                      #element-wise tensor processing
 import pandas as pd                     #dataframe processing
-from global_constants import npt_nm, npt_wn, npt_ev, conv_wntoev
+from spectroplot.global_constants import npt_nm, npt_wn, npt_ev, conv_wntoev
 
 def show_plots(ext: str, s: list[bool]) -> Optional[bool]:
     #check if the file is needed for the plot asked by the user
