@@ -2,12 +2,72 @@ import numpy as np
 import sys
 sys.path.insert(0, "src")
 
+from hypothesis import given, strategies as st, settings
+
 from spectroplot.functions import (
     wntonm, wntoev, nmtown, nmtoev,
     lineshape, normalization, atLeastTwo,
     plotType, roundup, rounddown, unitConverter,
 )
 from spectroplot.global_constants import conv_wntoev
+
+# Strategies for property-based converter tests
+positive_floats = st.floats(min_value=1, max_value=1e6, allow_infinity=False,
+                            allow_nan=False)
+positive_nparrays = st.lists(
+    st.floats(min_value=1, max_value=1e6, allow_infinity=False, allow_nan=False),
+    min_size=1, max_size=10,
+).map(np.array)
+
+
+class TestConverterRoundTrips:
+    @given(positive_nparrays)
+    @settings(max_examples=100)
+    def test_wntonm_nmtown_roundtrip(self, arr):
+        result = wntonm(nmtown(arr))
+        np.testing.assert_allclose(result, arr, rtol=1e-10)
+
+    @given(positive_nparrays)
+    @settings(max_examples=100)
+    def test_nmtown_wntonm_roundtrip(self, arr):
+        result = nmtown(wntonm(arr))
+        np.testing.assert_allclose(result, arr, rtol=1e-10)
+
+    @given(positive_nparrays)
+    @settings(max_examples=100)
+    def test_nmtoev_via_wn_consistency(self, arr):
+        result_direct = nmtoev(arr)
+        result_via_wn = wntoev(nmtown(arr))
+        np.testing.assert_allclose(result_direct, result_via_wn, rtol=1e-10)
+
+    @given(positive_nparrays)
+    @settings(max_examples=100)
+    def test_wntoev_via_nm_consistency(self, arr):
+        result_direct = wntoev(arr)
+        result_via_nm = nmtoev(wntonm(arr))
+        np.testing.assert_allclose(result_direct, result_via_nm, rtol=1e-10)
+
+    @given(st.data())
+    @settings(max_examples=100)
+    def test_wntonm_ev_conversion_consistency(self, data):
+        wn = data.draw(st.floats(min_value=100, max_value=50000,
+                                 allow_infinity=False, allow_nan=False))
+        nm = wntonm(np.array([wn]))[0]
+        ev_from_wn = wntoev(np.array([wn]))[0]
+        ev_from_nm = nmtoev(np.array([nm]))[0]
+        np.testing.assert_allclose(ev_from_wn, ev_from_nm, rtol=1e-10)
+
+    @given(positive_nparrays)
+    @settings(max_examples=100)
+    def test_unit_converter_identity_out_to_out(self, arr):
+        result = unitConverter(arr, ".out", "wn")
+        np.testing.assert_allclose(result, arr)
+
+    @given(positive_nparrays)
+    @settings(max_examples=100)
+    def test_unit_converter_identity_asc_to_asc(self, arr):
+        result = unitConverter(arr, ".asc", "nm")
+        np.testing.assert_allclose(result, arr)
 
 
 class TestUnitConverters:

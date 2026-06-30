@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-import sys                              #sys files processing
 import re                               #regex
 from typing import Optional
 import numpy as np                      #element-wise tensor processing
@@ -23,18 +22,15 @@ def is_unique(s: pd.Series) -> bool:
     return bool((a[0] == a).all())
 
 def rootSum(df: pd.DataFrame) -> pd.DataFrame:
-    #check if all the roots come from the same system - exit if not
+    #check if all the roots come from the same system
     data = df[df["root_number"] > 0]
     if not is_unique(data["name"]):
-        print("Warning. Roots from different systems. Exit.")
-        sys.exit(1)
-    else:
-        name = data["name"].iloc[0]
-    #check if all the roots have the same xdata - exit if not
+        raise ValueError("Roots from different systems.")
+    name = data["name"].iloc[0]
+    #check if all the roots have the same xdata
     samex = [data["xdata"].iloc[0] == row["xdata"] for i,row in data.iterrows()]
     if not all(samex):
-        print("Warning. Roots have different xdata. Exit.")
-        sys.exit(1)
+        raise ValueError("Roots have different xdata.")
     else:
         xdata = data["xdata"].iloc[0]
     temp = np.array(data["ydata"].to_list())

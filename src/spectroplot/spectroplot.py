@@ -438,17 +438,18 @@ def main():
         sys.exit(1)
 
     #select y-axis label and linewidth based on input type
+    y_label_use = y_label    # default from global_constants
     if ir_input:
-        y_label = y_label_ir
+        y_label_use = y_label_ir
         w = w_ir
     if raman_input:
-        y_label = y_label_raman
+        y_label_use = y_label_raman
         w = w_raman
     if vpt2_input:
-        y_label = y_label_ir
+        y_label_use = y_label_ir
         w = w_ir
     if args.axisPL:
-        y_label = y_label_PL
+        y_label_use = y_label_PL
 
     #sort the dataset and convert it into a dataframe
     data_list = sorted(spectra_list, key=lambda d: float(d["root_number"]))
@@ -457,8 +458,13 @@ def main():
     #if possible, add the sum of all the ESD roots
     root_sum = None
     if not df[df["root_number"] > 0].empty:
-        root_sum = rootSum(df)
-        df = pd.concat([df, root_sum], ignore_index=True)
+        try:
+            root_sum = rootSum(df)
+        except ValueError as e:
+            print(f"Warning: {e}")
+            root_sum = None
+        if root_sum is not None:
+            df = pd.concat([df, root_sum], ignore_index=True)
 
     #data processing for the plots
     df["xdata_plot"] = df.apply(xdataPrep,axis=1,unit=plot_type,shift=shift)
@@ -527,7 +533,7 @@ def main():
         ax.set_xlabel(x_label_nm)
 
     #label y axis
-    ax.set_ylabel(y_label)
+    ax.set_ylabel(y_label_use)
     ax.get_yaxis().set_ticks([])    #remove ticks from y axis
 
     #show minor ticks
