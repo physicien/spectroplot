@@ -57,8 +57,8 @@ spectroplot data/ESD/FLUOR/lw100/FLUOR_c60-Ih_esd.spectrum -s -n --lineshape_gau
 ![ESD fluorescence](examples/esd_fluor.png)
 
 ```console
-# ESD absorption in eV (all roots)
-spectroplot data/ESD/ABS/ABS_pyrene_esd.spectrum.root* -s -n --plotev
+# ESD absorption in eV (all roots, 3-8 eV range)
+spectroplot data/ESD/ABS/ABS_pyrene_esd.spectrum.root* -s -n --plotev -x0 3 -x1 8
 ```
 
 ![ESD absorption roots](examples/esd_abs_roots.png)
