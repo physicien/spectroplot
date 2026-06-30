@@ -12,16 +12,17 @@ from scipy.signal import find_peaks     #peak detection
 from spectroplot.global_constants import (
     th_fac, esd_fac, ex_fac, color_palette,
     label_tddft, label_sticks, label_expt, label_roots,
-    label_ir, label_vpt2, label_vpt2_overt, label_sticks_vib,
+    label_ir, label_raman, label_vpt2, label_vpt2_overt,
+    label_sticks_vib,
     show_single_lineshape, show_single_lineshape_area,
     show_conv_spectrum, show_sticks, show_exp_spectrum,
     show_esd_spectrum, show_single_root_area, show_ir_spectrum,
     show_label_peaks, show_label_roots,
     show_minor_ticks, show_grid, show_legend, linear_locator,
-    y_label, y_label_PL, y_label_ir,
+    y_label, y_label_PL, y_label_ir, y_label_raman,
     x_label_wn, x_label_ev, x_label_nm,
     a_label, figure_dpi, acs_w, acs_h, output_name,
-    conv_wntoev, w_nm, w_wn, w_ev, w_ir,
+    conv_wntoev, w_nm, w_wn, w_ev, w_ir, w_raman,
 )
 from spectroplot.functions import (
     atLeastTwo, plotType, show_plots, rootSum,
@@ -129,6 +130,29 @@ def _plot_ir(ax, row, i, plt_range_x, w, ls_gauss, palette, lw):
         plot_data[i] = (plt_range_x, plt_range_lineshape_sum_y)
         ax.plot(plt_range_x, plt_range_lineshape_sum_y, color=palette[3],
                 linewidth=lw, label=label_ir)
+
+    if show_sticks:
+        if not show_conv_spectrum:
+            plot_data[i] = (xdata, ydata)
+        ax.stem(xdata, ydata, linefmt="dimgrey", markerfmt=" ",
+                basefmt=" ", label=label_sticks_vib)
+
+
+def _plot_raman(ax, row, i, plt_range_x, w, ls_gauss, palette, lw):
+    lineshape_sum = []
+    xdata = row["xdata_plot"]
+    ydata = row["ydata"]
+
+    for index, wn in enumerate(xdata):
+        if show_conv_spectrum:
+            lineshape_sum.append(lineshape(ydata[index], plt_range_x, wn, w,
+                                           ls_gauss))
+
+    if show_conv_spectrum:
+        plt_range_lineshape_sum_y = np.sum(lineshape_sum, axis=0)
+        plot_data[i] = (plt_range_x, plt_range_lineshape_sum_y)
+        ax.plot(plt_range_x, plt_range_lineshape_sum_y, color=palette[5],
+                linewidth=lw, label=label_raman)
 
     if show_sticks:
         if not show_conv_spectrum:
@@ -317,6 +341,7 @@ def main():
     ls_gauss = args.lineshape_gauss     #gaussian line shape if True
                                         #lorentzian line shape if False (default)
     ir_input = False
+    raman_input = False
     vpt2_input = False
     shift_wn = args.shiftwn             #shift the spectrum in cm**-1
     shift_ev = args.shiftev*conv_wntoev #shift the spectrum in eV
@@ -397,6 +422,8 @@ def main():
         spectrum = SpectrumData(path)
         if spectrum.spectrum_type == "ir":
             ir_input = True
+        if spectrum.spectrum_type == "raman":
+            raman_input = True
         if spectrum.spectrum_type == "vpt2":
             vpt2_input = True
         spectrum_data = {
@@ -423,6 +450,9 @@ def main():
     if ir_input:
         y_label = y_label_ir
         w = w_ir
+    if raman_input:
+        y_label = y_label_raman
+        w = w_raman
     if vpt2_input:
         y_label = y_label_ir
         w = w_ir
@@ -480,6 +510,8 @@ def main():
     for i, row in df.iterrows():
         if row["ext"] == ".out" and row["spectrum_type"] == "ir":
             _plot_ir(ax, row, i, plt_range_x, w, ls_gauss, palette, lw)
+        elif row["ext"] == ".out" and row["spectrum_type"] == "raman":
+            _plot_raman(ax, row, i, plt_range_x, w, ls_gauss, palette, lw)
         elif row["ext"] == ".out" and row["spectrum_type"] == "vpt2":
             _plot_vpt2(ax, row, i, plt_range_x, w, ls_gauss, palette, lw)
         elif row["ext"] == ".out":

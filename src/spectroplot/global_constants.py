@@ -9,6 +9,7 @@ label_sticks = "VEE"                #label td-dft sticks plot
 label_expt = "Expt."                #label experimental plot
 label_roots = "ESD"                 #label root convolution plot
 label_ir = "IR"                     #label ir spectrum plot
+label_raman = "Raman"               #label raman spectrum plot
 label_vpt2 = "VPT2"                 #label vpt2 spectrum plot
 label_vpt2_overt = "Overt. + Comb." #label vpt2 overtones and combination bands
 label_sticks_vib = "Calc. Trans." #label ir/vpt2 stick spectra
@@ -32,6 +33,7 @@ linear_locator = False              #tick locations at the beginning and end
 y_label = "Absorbance (arb. units)"      #label of the y-axis - ABS (default)
 y_label_PL = "PL Intensity (arb. units)"#label of the y-axis - PL
 y_label_ir = "IR Intensity (arb. units)"#label of the y-axis - IR
+y_label_raman = "Raman Intensity (arb. units)"#label of the y-axis - Raman
 x_label_wn = r'Energy (cm$^{-1}$)'      #label of the x-axis - wave number
 x_label_ev = r'Energy (eV)'             #label of the x-axis - eV
 #x_label_nm = r'$\lambda$ (nm)'          #label of the x-axis - nm
@@ -48,6 +50,8 @@ output_name = "spectrum"                #output file name
 vpt2_string = 'ORCA VPT2/GVPT2 Analysis' #start reading orca.out for VPT2 data
 #start reading orca.out for IR data from here
 ir_string = 'IR SPECTRUM'                #start reading orca.out for IR data
+#start reading orca.out for Raman data from here
+raman_string = 'RAMAN SPECTRUM'          #start reading orca.out for Raman data
 #start reading orca.out for uv data from here
 specstring_start = 'ABSORPTION SPECTRUM VIA TRANSITION ELECTRIC DIPOLE MOMENTS'
 #stop reading orca.out from here
@@ -56,6 +60,7 @@ w_nm = 20       #w = line width for broadening - nm, FWHM
 w_wn = 1000     #w = line width for broadening - wave numbers, FWHM
 w_ev = 0.1      #w = line width for broadening - eV, FWHM
 w_ir = 20        #w = line width for broadening - IR, FWHM (cm**-1)
+w_raman = 20     #w = line width for broadening - Raman, FWHM (cm**-1)
 npt_nm = 10     #npt = nb of pts per unit to calculate the line shape in nm
 npt_wn = 1      #npt = nb of pts per unit to calculate the line shape in cm**-1
 npt_ev = 1000   #npt = nb of pts per unit to calculate the line shape in eV

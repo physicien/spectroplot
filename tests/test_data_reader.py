@@ -184,3 +184,36 @@ class TestSpectrumDataVPT2:
         x, y = self.sd.data
         assert abs(x[21] - 1204.60) < 1e-2
         assert abs(y[21] - 0.01) < 1e-2
+
+
+class TestSpectrumDataRaman:
+    def setup_method(self):
+        self.sd = SpectrumData(f"{DATA_DIR}/Raman/RAM_c60-Ih_r.out")
+
+    def test_filetype(self):
+        assert self.sd.filetype == ".out"
+
+    def test_name(self):
+        assert self.sd.name == "RAM_c60-Ih_r"
+
+    def test_rootnumber(self):
+        assert self.sd.rootnumber == 0
+
+    def test_spectrum_type(self):
+        assert self.sd.spectrum_type == "raman"
+
+    def test_data_length(self):
+        x, y = self.sd.data
+        assert len(x) == len(y)
+        assert len(x) == 174
+
+    def test_first_values(self):
+        x, y = self.sd.data
+        assert abs(x[0] - 257.02) < 1e-2
+        assert abs(y[0] - 25.589899) < 1e-6
+
+    def test_most_intense(self):
+        x, y = self.sd.data
+        i_max = max(range(len(y)), key=lambda i: y[i])
+        assert abs(x[i_max] - 1475.87) < 1e-2
+        assert abs(y[i_max] - 378.715279) < 1e-6

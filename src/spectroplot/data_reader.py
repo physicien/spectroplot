@@ -6,6 +6,7 @@ from pathlib import Path            #path processing (replace os)
 from typing import Optional, Tuple
 from spectroplot.global_constants import (
     specstring_start, specstring_end, ir_string, vpt2_string,
+    raman_string,
 )
 
 
@@ -94,6 +95,20 @@ class SpectrumData:
                             intenslist.append(float(parts[3]))
                     break
         return freqlist, intenslist
+
+    def read_raman(self) -> Tuple[list[float], list[float]]:
+        freqlist: list[float] = []
+        activlist: list[float] = []
+        with open(self.path, 'r') as file:
+            for line in file:
+                if raman_string in line:
+                    for line in file:
+                        if re.search(r"^\s*\d+:", line):
+                            parts = line.strip().split()
+                            freqlist.append(float(parts[1]))
+                            activlist.append(float(parts[2]))
+                    break
+        return freqlist, activlist
 
     def read_vpt2(self) -> Tuple[list[float], list[float]]:
         freqlist: list[float] = []
@@ -191,6 +206,9 @@ class SpectrumData:
         if vpt2_string in content:
             self.spectrum_type = "vpt2"
             return self.read_vpt2()
+        if raman_string in content:
+            self.spectrum_type = "raman"
+            return self.read_raman()
         if ir_string in content:
             self.spectrum_type = "ir"
             return self.read_ir()
