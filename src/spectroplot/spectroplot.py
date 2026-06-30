@@ -95,7 +95,7 @@ def _plot_esd(ax, row, i, palette, lw):
                 label=label_roots)
 
 
-def _plot_esd_root(ax, row, i, root_sum, lw):
+def _plot_esd_root(ax, row, i, root_sum, lw, df):
     xdata = row["xdata_plot"]
     ydata = row["ydata"]
     index = row["root_number"] - 1
@@ -412,7 +412,7 @@ def main():
         elif row["ext"] == ".spectrum":
             _plot_esd(ax, row, i, palette, lw)
         elif re.search(r"\.spectrum\.root\d+$", row["ext"]):
-            _plot_esd_root(ax, row, i, root_sum, lw)
+            _plot_esd_root(ax, row, i, root_sum, lw, df)
 
     #legend
     if show_legend:

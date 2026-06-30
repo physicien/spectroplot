@@ -33,6 +33,50 @@ python3 -m spectroplot [OPTION] filename
 
 It will save the plot as SVG: `spectrum.svg`
 
+### Examples
+
+```console
+# TD-DFT absorption in nm
+spectroplot data/TD-DFT/UV_c60-Ih.out -s -n
+```
+
+![TD-DFT absorption](examples/td-dft_abs.png)
+
+```console
+# TD-DFT + experimental overlaid
+spectroplot data/TD-DFT/UV_c60-Ih.out data/experimental/C60.asc -s -n
+```
+
+![TD-DFT + experimental](examples/td-dft_expt.png)
+
+```console
+# ESD fluorescence in nm with Gaussian lineshape
+spectroplot data/ESD/FLUOR/lw100/FLUOR_c60-Ih_esd.spectrum -s -n --lineshape_gauss
+```
+
+![ESD fluorescence](examples/esd_fluor.png)
+
+```console
+# ESD absorption in eV (all roots)
+spectroplot data/ESD/ABS/ABS_pyrene_esd.spectrum.root* -s -n --plotev
+```
+
+![ESD absorption roots](examples/esd_abs_roots.png)
+
+```console
+# PL spectrum
+spectroplot data/experimental/C60_PL.asc -s -n -PL
+```
+
+![PL spectrum](examples/expt_pl.png)
+
+```console
+# Custom output as PNG
+spectroplot data/TD-DFT/UV_c60-Ih.out -o spectrum.png
+```
+
+![Custom PNG output](examples/custom_output.png)
+
 ### Command-line options
 
 - `filename` , required: filename (.out, .asc, .spectrum, .spectrum.rootX)
