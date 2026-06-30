@@ -12,7 +12,7 @@ from scipy.signal import find_peaks     #peak detection
 from spectroplot.global_constants import (
     th_fac, esd_fac, ex_fac, color_palette,
     label_tddft, label_sticks, label_expt, label_roots,
-    label_ir, label_vpt2, label_vpt2_overt,
+    label_ir, label_vpt2, label_vpt2_overt, label_sticks_vib,
     show_single_lineshape, show_single_lineshape_area,
     show_conv_spectrum, show_sticks, show_exp_spectrum,
     show_esd_spectrum, show_single_root_area, show_ir_spectrum,
@@ -134,7 +134,7 @@ def _plot_ir(ax, row, i, plt_range_x, w, ls_gauss, palette, lw):
         if not show_conv_spectrum:
             plot_data[i] = (xdata, ydata)
         ax.stem(xdata, ydata, linefmt="dimgrey", markerfmt=" ",
-                basefmt=" ", label=label_ir)
+                basefmt=" ", label=label_sticks_vib)
 
 
 def _plot_vpt2(ax, row, i, plt_range_x, w, ls_gauss, palette, lw):
@@ -163,7 +163,7 @@ def _plot_vpt2(ax, row, i, plt_range_x, w, ls_gauss, palette, lw):
             plot_data[i] = (xdata, ydata)
         if nfund:
             ax.stem(fund_x, fund_y, linefmt="dimgrey", markerfmt=" ",
-                    basefmt=" ", label=label_vpt2)
+                    basefmt=" ", label=label_sticks_vib)
             ax.stem(overt_x, overt_y, linefmt=palette[4], markerfmt=" ",
                     basefmt=" ", label=label_vpt2_overt)
         else:

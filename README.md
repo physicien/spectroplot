@@ -88,7 +88,7 @@ spectroplot data/IR/FRQ_tungsten_hexacarbonyl_f.out -s -n
 
 ```console
 # VPT2 anharmonic IR spectrum with overtones and combination bands
-spectroplot data/VPT2/VPT2_furan_vpt2.out -s -n
+spectroplot data/VPT2/VPT2_furan_vpt2.out -s -n -x0 0 -x1 6500
 ```
 
 ![VPT2 spectrum](examples/vpt2_spectrum.png)
