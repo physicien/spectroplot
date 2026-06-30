@@ -8,6 +8,7 @@ label_tddft = "TD-DFT"              #label td-dft convolution plot
 label_sticks = "VEE"                #label td-dft sticks plot
 label_expt = "Expt."                #label experimental plot
 label_roots = "ESD"                 #label root convolution plot
+label_ir = "IR"                     #label ir spectrum plot
 
 show_single_lineshape = False       #show single line shape functions if True
 show_single_lineshape_area = False  #show single line shape areas if True
@@ -16,6 +17,7 @@ show_sticks = True                  #show the stick spectra if True
 show_exp_spectrum = True            #show the experimental spectra if True
 show_single_root_area = True        #show single ESD root area plot if True 
 show_esd_spectrum = True            #show the ESD spectra if True
+show_ir_spectrum = True             #show the IR spectra if True
 
 show_label_peaks = True             #show peak labels if True
 show_label_roots = True             #show root labels if True
@@ -24,8 +26,9 @@ show_grid = False                   #show grid if True
 show_legend = True                  #show the legend
 linear_locator = False              #tick locations at the beginning and end
                                     #of the spectrum x-axis, evenly spaced
-y_label= "Absorbance (arb. units)"      #label of the y-axis - ABS (default)
+y_label = "Absorbance (arb. units)"      #label of the y-axis - ABS (default)
 y_label_PL = "PL Intensity (arb. units)"#label of the y-axis - PL
+y_label_ir = "IR Intensity (arb. units)"#label of the y-axis - IR
 x_label_wn = r'Energy (cm$^{-1}$)'      #label of the x-axis - wave number
 x_label_ev = r'Energy (eV)'             #label of the x-axis - eV
 #x_label_nm = r'$\lambda$ (nm)'          #label of the x-axis - nm
@@ -38,6 +41,8 @@ output_name = "spectrum"                #output file name
 
 
 #CONSTANTS SECTION - go away if you don't know what you're doing
+#start reading orca.out for IR data from here
+ir_string = 'IR SPECTRUM'                #start reading orca.out for IR data
 #start reading orca.out for uv data from here
 specstring_start = 'ABSORPTION SPECTRUM VIA TRANSITION ELECTRIC DIPOLE MOMENTS'
 #stop reading orca.out from here

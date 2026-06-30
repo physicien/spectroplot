@@ -25,6 +25,9 @@ class TestSpectrumDataAsc:
         assert len(x) == len(y)
         assert len(x) > 0
 
+    def test_spectrum_type(self):
+        assert self.sd.spectrum_type == "experimental"
+
     def test_data_ranges(self):
         x, y = self.sd.data
         assert all(isinstance(v, float) for v in x)
@@ -46,6 +49,9 @@ class TestSpectrumDataSpectrum:
 
     def test_rootnumber(self):
         assert self.sd.rootnumber == 0
+
+    def test_spectrum_type(self):
+        assert self.sd.spectrum_type == "esd"
 
     def test_data_length(self):
         x, y = self.sd.data
@@ -70,6 +76,9 @@ class TestSpectrumDataOut:
 
     def test_rootnumber(self):
         assert self.sd.rootnumber == 0
+
+    def test_spectrum_type(self):
+        assert self.sd.spectrum_type == "tddft"
 
     def test_data_length(self):
         x, y = self.sd.data
@@ -97,6 +106,9 @@ class TestSpectrumDataRoot:
     def test_rootnumber(self):
         assert self.sd.rootnumber == 1
 
+    def test_spectrum_type(self):
+        assert self.sd.spectrum_type == "esd"
+
     def test_data_length(self):
         x, y = self.sd.data
         assert len(x) == len(y)
@@ -106,3 +118,32 @@ class TestSpectrumDataRoot:
         x, y = self.sd.data
         assert abs(x[0] - 10002.83) < 1e-2
         assert abs(y[0] - 5.291294e-01) < 1e-6
+
+
+class TestSpectrumDataIR:
+    def setup_method(self):
+        self.sd = SpectrumData(
+            f"{DATA_DIR}/IR/FRQ_tungsten_hexacarbonyl_f.out"
+        )
+
+    def test_filetype(self):
+        assert self.sd.filetype == ".out"
+
+    def test_name(self):
+        assert self.sd.name == "FRQ_tungsten_hexacarbonyl_f"
+
+    def test_rootnumber(self):
+        assert self.sd.rootnumber == 0
+
+    def test_spectrum_type(self):
+        assert self.sd.spectrum_type == "ir"
+
+    def test_data_length(self):
+        x, y = self.sd.data
+        assert len(x) == len(y)
+        assert len(x) > 0
+
+    def test_first_values(self):
+        x, y = self.sd.data
+        assert abs(x[0] - 61.13) < 1e-2
+        assert abs(y[0] - 0.00) < 1e-6

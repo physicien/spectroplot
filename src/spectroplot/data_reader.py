@@ -4,7 +4,9 @@ import sys                          #sys files processing
 import re                           #regex
 from pathlib import Path            #path processing (replace os)
 from typing import Optional, Tuple
-from spectroplot.global_constants import specstring_start, specstring_end
+from spectroplot.global_constants import (
+    specstring_start, specstring_end, ir_string,
+)
 
 
 class SpectrumData:
@@ -18,6 +20,7 @@ class SpectrumData:
         self.name: str = self.read_name()
         self.filetype: str = self.read_ext()
         self.rootnumber: int = self.read_root()
+        self.spectrum_type: str = ""
         self.data: list[list[float]] = self.read_data()
 
     def read_name(self) -> str:
@@ -77,8 +80,28 @@ class SpectrumData:
         #return data from orca.out
         return energylist, intenslist
 
+    def read_ir(self) -> Tuple[list[float], list[float]]:
+        freqlist: list[float] = []
+        intenslist: list[float] = []
+        with open(self.path, 'r') as file:
+            for line in file:
+                if ir_string in line:
+                    for line in file:
+                        if re.search(r"^\s*\d+:", line):
+                            parts = line.strip().split()
+                            freqlist.append(float(parts[1]))
+                            intenslist.append(float(parts[3]))
+                    break
+        return freqlist, intenslist
+
     def read_out(self) -> Tuple[list[float], list[float]]:
-        return self.read_out_abs()  # Temp solution before adding IR
+        with open(self.path, 'r') as file:
+            content = file.read()
+        if ir_string in content:
+            self.spectrum_type = "ir"
+            return self.read_ir()
+        self.spectrum_type = "tddft"
+        return self.read_out_abs()
 
     def read_asc(self) -> Tuple[list[float], list[float]]:
         wavelengthlist: list[float] = []
@@ -117,6 +140,7 @@ class SpectrumData:
                 sys.exit(1)
 
         elif fext == '.asc':
+            self.spectrum_type = "experimental"
             try:
                 xlist, ylist = self.read_asc()
             #file not found -> exit here
@@ -125,6 +149,7 @@ class SpectrumData:
                 sys.exit(1)
 
         elif fext == '.spectrum' or re.search(r"\.spectrum\.root\d+$", fext):
+            self.spectrum_type = "esd"
             try:
                 xlist, ylist = self.read_spectrum()
             #file not found -> exit here

@@ -11,13 +11,14 @@ from scipy.signal import find_peaks     #peak detection
 
 from spectroplot.global_constants import (
     th_fac, esd_fac, ex_fac, color_palette,
-    label_tddft, label_sticks, label_expt, label_roots,
+    label_tddft, label_sticks, label_expt, label_roots, label_ir,
     show_single_lineshape, show_single_lineshape_area,
     show_conv_spectrum, show_sticks, show_exp_spectrum,
-    show_esd_spectrum, show_single_root_area,
+    show_esd_spectrum, show_single_root_area, show_ir_spectrum,
     show_label_peaks, show_label_roots,
     show_minor_ticks, show_grid, show_legend, linear_locator,
-    y_label, y_label_PL, x_label_wn, x_label_ev, x_label_nm,
+    y_label, y_label_PL, y_label_ir,
+    x_label_wn, x_label_ev, x_label_nm,
     a_label, figure_dpi, acs_w, acs_h, output_name,
     conv_wntoev, w_nm, w_wn, w_ev,
 )
@@ -110,6 +111,29 @@ def _plot_esd_root(ax, row, i, root_sum, lw, df):
     if show_single_root_area:
         ax.fill_between(xdata, intenslist, color=esd_palette[index],
                         alpha=0.5)
+
+
+def _plot_ir(ax, row, i, plt_range_x, w, ls_gauss, palette, lw):
+    lineshape_sum = []
+    xdata = row["xdata_plot"]
+    ydata = row["ydata"]
+
+    for index, wn in enumerate(xdata):
+        if show_conv_spectrum:
+            lineshape_sum.append(lineshape(ydata[index], plt_range_x, wn, w,
+                                           ls_gauss))
+
+    if show_conv_spectrum:
+        plt_range_lineshape_sum_y = np.sum(lineshape_sum, axis=0)
+        plot_data[i] = (plt_range_x, plt_range_lineshape_sum_y)
+        ax.plot(plt_range_x, plt_range_lineshape_sum_y, color=palette[3],
+                linewidth=lw, label=label_ir)
+
+    if show_sticks:
+        if not show_conv_spectrum:
+            plot_data[i] = (xdata, ydata)
+        ax.stem(xdata, ydata, linefmt="dimgrey", markerfmt=" ",
+                basefmt=" ", label=label_ir)
 
 
 def main():
@@ -259,8 +283,7 @@ def main():
     ev_plot = args.plotev               #energy plot /eV if True
     ls_gauss = args.lineshape_gauss     #gaussian line shape if True
                                         #lorentzian line shape if False (default)
-    if args.axisPL:                     #change the y-axis label for PL Intensity
-        y_label = y_label_PL
+    ir_input = False
     shift_wn = args.shiftwn             #shift the spectrum in cm**-1
     shift_ev = args.shiftev*conv_wntoev #shift the spectrum in eV
 
@@ -338,11 +361,14 @@ def main():
                   show_esd_spectrum,show_single_root_area]
     for index,path in enumerate(args.filename):
         spectrum = SpectrumData(path)
+        if spectrum.spectrum_type == "ir":
+            ir_input = True
         spectrum_data = {
                 "path": spectrum.path,
                 "name": spectrum.name,
                 "ext": spectrum.filetype,
                 "root_number": spectrum.rootnumber,
+                "spectrum_type": spectrum.spectrum_type,
                 "xdata": spectrum.data[0],
                 "ydata": spectrum.data[1],
         }
@@ -355,6 +381,12 @@ def main():
         #check if spectra_list is empty - exit if true
         print("Warning. You are requesting an empty plot. Exit.")
         sys.exit(1)
+
+    #select y-axis label based on input type
+    if ir_input:
+        y_label = y_label_ir
+    elif args.axisPL:
+        y_label = y_label_PL
 
     #sort the dataset and convert it into a dataframe
     data_list = sorted(spectra_list, key=lambda d: float(d["root_number"]))
@@ -405,7 +437,9 @@ def main():
 
     #All the plots
     for i, row in df.iterrows():
-        if row["ext"] == ".out":
+        if row["ext"] == ".out" and row["spectrum_type"] == "ir":
+            _plot_ir(ax, row, i, plt_range_x, w, ls_gauss, palette, lw)
+        elif row["ext"] == ".out":
             _plot_tddft(ax, row, i, plt_range_x, w, ls_gauss, palette, lw)
         elif row["ext"] == ".asc":
             _plot_experimental(ax, row, i, palette, lw)
