@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 
-import sys                          #sys files processing
 import re                           #regex
 from pathlib import Path            #path processing (replace os)
 from typing import Optional, Tuple
@@ -74,10 +73,11 @@ class SpectrumData:
                         continue    # executed if the inner loop didn't break
                     break           # executed if the inner loop did break
 
-        #no UV data in orca.out -> exit here
+        #no UV data in orca.out
         if not found_uv_section:
-            print(f"'{specstring_start}' not found in '{self.path}'")
-            sys.exit(1)
+            raise ValueError(
+                f"'{specstring_start}' not found in '{self.path}'"
+            )
 
         #return data from orca.out
         return energylist, intenslist
@@ -244,34 +244,17 @@ class SpectrumData:
         fpath = self.path
         fext = self.filetype
         if fext == '.out':
-            try:
-                xlist, ylist = self.read_out()
-            #file not found -> exit here
-            except IOError:
-                print(f"'{fpath}' not found")
-                sys.exit(1)
-
+            xlist, ylist = self.read_out()
         elif fext == '.asc':
             self.spectrum_type = "experimental"
-            try:
-                xlist, ylist = self.read_asc()
-            #file not found -> exit here
-            except IOError:
-                print(f"'{fpath}' not found")
-                sys.exit(1)
-
+            xlist, ylist = self.read_asc()
         elif fext == '.spectrum' or re.search(r"\.spectrum\.root\d+$", fext):
             self.spectrum_type = "esd"
-            try:
-                xlist, ylist = self.read_spectrum()
-            #file not found -> exit here
-            except IOError:
-                print(f"'{fpath}' not found")
-                sys.exit(1)
-
+            xlist, ylist = self.read_spectrum()
         else:
-            print(f"Warning! The file {fpath} couldn't be opened.")
-            sys.exit(1)
+            raise ValueError(
+                f"Unknown file extension '{fext}' for file '{fpath}'"
+            )
 
         return [xlist, ylist]
 

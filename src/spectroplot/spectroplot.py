@@ -184,7 +184,6 @@ def _plot_vpt2(ax, row, i, plt_range_x, w, ls_gauss, palette, lw):
 
 
 def main():
-    global w_nm, w_wn, w_ev, y_label
     #create parser
     parser = argparse.ArgumentParser(prog='spectroplot',\
             description='Easily plor optical spectra from orca.out,\
@@ -346,24 +345,24 @@ def main():
 
     #check if w for nm is between 1 and 500, else reset to 20
     if 1 <= args.linewidth_nm <= 500:
-        w_nm = args.linewidth_nm
+        w_nm_use = args.linewidth_nm
     else:
         print("warning! line width exceeds range, reset to 20")
-        w_nm = 20
+        w_nm_use = 20
 
     #check if w for wn is between 100 and 20000, else reset to 1000
     if 100 <= args.linewidth_wn <= 20000:
-        w_wn = args.linewidth_wn
+        w_wn_use = args.linewidth_wn
     else:
         print("warning! line width exceeds range, reset to 1000")
-        w_wn = 1000
+        w_wn_use = 1000
 
     #check if w for eV is between 0.01 and 2.5, else reset to 0.1
     if 0.01 <= args.linewidth_ev <= 2.5:
-        w_ev = args.linewidth_ev
+        w_ev_use = args.linewidth_ev
     else:
         print("warning! line width exceeds range, reset to 0.1")
-        w_ev = 0.1
+        w_ev_use = 0.1
 
     #check if startx and endx are equal - exit if true
     if args.startx is not None and args.endx is not None \
@@ -395,11 +394,11 @@ def main():
 
     #choose the right linewidth for the right plot type
     if ev_plot:
-        w = w_ev    #use linewidth in eV
+        w = w_ev_use    #use linewidth in eV
     elif wn_plot:
-        w = w_wn    #use linewidth in cm**-1
+        w = w_wn_use    #use linewidth in cm**-1
     else:
-        w = w_nm    #use linewidth in nm
+        w = w_nm_use    #use linewidth in nm
 
     #parse input files
     spectra_list = list()
@@ -407,7 +406,11 @@ def main():
                   show_conv_spectrum,show_sticks,show_exp_spectrum,
                   show_esd_spectrum,show_single_root_area]
     for index,path in enumerate(args.filename):
-        spectrum = SpectrumData(path)
+        try:
+            spectrum = SpectrumData(path)
+        except (ValueError, IOError) as e:
+            print(f"Warning: {e}")
+            continue
         if spectrum.spectrum_type == "ir":
             ir_input = True
         if spectrum.spectrum_type == "raman":
