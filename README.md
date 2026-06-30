@@ -151,3 +151,4 @@ Based on `orca_uv` by [Sebastian Dechert](https://github.com/radi0sus/orca_uv)
 ## TO DO
 
 - Change the line color/style when the same type of data type is plotted multiple times.
+- Add transmittance mode (-tr/--transmittance) for IR/Raman/VPT2 spectra.
