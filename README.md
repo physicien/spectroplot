@@ -131,5 +131,3 @@ Based on `orca_uv` by [Sebastian Dechert](https://github.com/radi0sus/orca_uv)
 - Implement IR spectra (intensity and transmittance) as well as their VPT2 corrections.
 
 - Implement Raman spectra?
-
-- Add examples
