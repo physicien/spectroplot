@@ -12,6 +12,8 @@ Supported data types:
 - **ESD** (`.spectrum`): absorption and fluorescence from ORCA excited state dynamics module
 - **ESD roots** (`.spectrum.rootX`): individual root contributions from ESD
 - **Experimental** (`.asc`): experimental spectra loaded as wavelength/intensity pairs
+- **IR** (`.out`): harmonic IR spectra from ORCA frequency calculations (auto-detected)
+- **VPT2** (`.out`): anharmonic VPT2-corrected IR spectra with overtones and combination bands (auto-detected)
 
 ### Install
 
@@ -77,6 +79,20 @@ spectroplot data/TD-DFT/UV_c60-Ih.out -o spectrum.png
 
 ![Custom PNG output](examples/custom_output.png)
 
+```console
+# Harmonic IR spectrum
+spectroplot data/IR/FRQ_tungsten_hexacarbonyl_f.out -s -n
+```
+
+![IR spectrum](examples/ir_spectrum.png)
+
+```console
+# VPT2 anharmonic IR spectrum with overtones and combination bands
+spectroplot data/VPT2/VPT2_furan_vpt2.out -s -n
+```
+
+![VPT2 spectrum](examples/vpt2_spectrum.png)
+
 ### Command-line options
 
 - `filename` , required: filename (.out, .asc, .spectrum, .spectrum.rootX)
@@ -127,7 +143,5 @@ Based on `orca_uv` by [Sebastian Dechert](https://github.com/radi0sus/orca_uv)
 ## TO DO
 
 - Change the line color/style when the same type of data type is plotted multiple times.
-
-- Implement IR spectra (intensity and transmittance) as well as their VPT2 corrections.
 
 - Implement Raman spectra?
