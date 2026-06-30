@@ -9,7 +9,7 @@ DATA_DIR = "data"
 
 class TestSpectrumDataAsc:
     def setup_method(self):
-        self.sd = SpectrumData(f"{DATA_DIR}/expt_data/C60.asc")
+        self.sd = SpectrumData(f"{DATA_DIR}/experimental/C60.asc")
 
     def test_filetype(self):
         assert self.sd.filetype == ".asc"
@@ -35,7 +35,7 @@ class TestSpectrumDataAsc:
 class TestSpectrumDataSpectrum:
     def setup_method(self):
         self.sd = SpectrumData(
-            f"{DATA_DIR}/FLUOR/lw100/FLUOR_c60-Ih_esd.spectrum"
+            f"{DATA_DIR}/ESD/FLUOR/lw100/FLUOR_c60-Ih_esd.spectrum"
         )
 
     def test_filetype(self):
@@ -60,7 +60,7 @@ class TestSpectrumDataSpectrum:
 
 class TestSpectrumDataOut:
     def setup_method(self):
-        self.sd = SpectrumData(f"{DATA_DIR}/td-dft/UV_c60-Ih.out")
+        self.sd = SpectrumData(f"{DATA_DIR}/TD-DFT/UV_c60-Ih.out")
 
     def test_filetype(self):
         assert self.sd.filetype == ".out"
