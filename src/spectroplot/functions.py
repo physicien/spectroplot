@@ -139,28 +139,28 @@ def unitConverter(data: np.ndarray, ext: str, unit: str) -> np.ndarray:
         return wntoev(data)
     return np.asarray(data)
 
-def xdataPrep(df: pd.Series, unit: str, shift: float) -> np.ndarray:
+def xdataPrep(row: pd.Series, unit: str, shift: float) -> np.ndarray:
     #convert spectrum x-axis units and shift it if not experimental
-    ext = df["ext"]
+    ext = row["ext"]
     if ext == ".asc":
-        data = df["xdata"]
+        data = row["xdata"]
     else:
-        data = np.asarray(df["xdata"]) + shift
+        data = np.asarray(row["xdata"]) + shift
     return unitConverter(data, ext, unit)
 
-def xdatamin(df: pd.Series, w: float) -> float:
+def xdatamin(row: pd.Series, w: float) -> float:
     #find the x-axis minimum
-    ext = df["ext"]
-    data = df["xdata_plot"]
+    ext = row["ext"]
+    data = row["xdata_plot"]
     if ext == ".asc":
         return min(data)-w*3
     else:
         return min(data)
 
-def xdatamax(df: pd.Series, w: float) -> float:
+def xdatamax(row: pd.Series, w: float) -> float:
     #find the x-axis maximum
-    ext = df["ext"]
-    data = df["xdata_plot"]
+    ext = row["ext"]
+    data = row["xdata_plot"]
     if ext == ".asc":
         return max(data)+w*3
     else:
