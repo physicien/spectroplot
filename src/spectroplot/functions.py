@@ -92,7 +92,10 @@ def lineshape(a: float, m: np.ndarray, x: float, w: float,
 
 def normalization(x: np.ndarray) -> np.ndarray:
     #normalize the spectrum between 0 and 1
-    return (x-np.amin(x))/(np.amax(x)-np.amin(x))
+    denom = np.amax(x) - np.amin(x)
+    if denom == 0:
+        return np.zeros_like(x)
+    return (x-np.amin(x))/denom
 
 def atLeastTwo(a: bool, b: bool, c: bool) -> bool:
     #return true if at least two elements out of three are true

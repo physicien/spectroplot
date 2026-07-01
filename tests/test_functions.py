@@ -144,7 +144,7 @@ class TestNormalization:
     def test_normalization_constant(self):
         data = np.array([3, 3, 3])
         result = normalization(data)
-        assert np.isnan(result).any()
+        np.testing.assert_array_equal(result, [0, 0, 0])
 
     def test_normalization_negative(self):
         data = np.array([-5, 0, 5])
