@@ -3,7 +3,7 @@ import re                           #regex
 
 logger = logging.getLogger(__name__)
 from pathlib import Path            #path processing (replace os)
-from typing import Optional, Tuple
+from typing import Iterator, Optional, Tuple
 from spectroplot.global_constants import (
     specstring_start, specstring_end, ir_string, vpt2_string,
     raman_string,
@@ -48,13 +48,20 @@ class SpectrumData:
                 f"spec_type={self.spectrum_type!r}, "
                 f"root={self.rootnumber}, npts={len(self.data[0])})")
 
-    def read_out_abs(self) -> Tuple[list[float], list[float]]:
+    def read_out_abs(
+        self, lines: Optional[list[str]] = None
+    ) -> Tuple[list[float], list[float]]:
         #check for uv data in orca.out
         found_uv_section = False
         energylist: list[float] = []       #energy cm-1
         intenslist: list[float] = []       #fosc
-        with open(self.path, 'r') as file:
-            for line in file:
+        it: Iterator[str]
+        if lines is not None:
+            it = iter(lines)
+        else:
+            it = open(self.path, 'r')
+        try:
+            for line in it:
                 #detect ORCA version
                 if "Program Version" in line:
                     version = re.search(r"\d\.\d\.\d", line)
@@ -66,7 +73,7 @@ class SpectrumData:
                 if specstring_start in line:
                     #found UV data in orca.out
                     found_uv_section = True
-                    for line in file:
+                    for line in it:
                         if specstring_end in line:
                             #stop extract text
                             break
@@ -74,11 +81,18 @@ class SpectrumData:
                         #split line into 3 lists mode, energy, intensities
                         #line should start with a number
                         if re.search(r"^\s*\d+\s+\d", line):
-                            energylist.append(float(line.strip().split()[l1]))
-                            intenslist.append(float(line.strip().split()[l2]))
+                            energylist.append(
+                                float(line.strip().split()[l1])
+                            )
+                            intenslist.append(
+                                float(line.strip().split()[l2])
+                            )
                     else:
                         continue    # executed if the inner loop didn't break
                     break           # executed if the inner loop did break
+        finally:
+            if lines is None:
+                it.close()
 
         #no UV data in orca.out
         if not found_uv_section:
@@ -89,40 +103,63 @@ class SpectrumData:
         #return data from orca.out
         return energylist, intenslist
 
-    def read_ir(self) -> Tuple[list[float], list[float]]:
+    def read_ir(
+        self, lines: Optional[list[str]] = None
+    ) -> Tuple[list[float], list[float]]:
         freqlist: list[float] = []
         intenslist: list[float] = []
-        with open(self.path, 'r') as file:
-            for line in file:
+        it: Iterator[str]
+        if lines is not None:
+            it = iter(lines)
+        else:
+            it = open(self.path, 'r')
+        try:
+            for line in it:
                 if ir_string in line:
-                    for line in file:
+                    for line in it:
                         if re.search(r"^\s*\d+:", line):
                             parts = line.strip().split()
                             freqlist.append(float(parts[1]))
                             intenslist.append(float(parts[3]))
                     break
+        finally:
+            if lines is None:
+                it.close()
         return freqlist, intenslist
 
-    def read_raman(self) -> Tuple[list[float], list[float]]:
+    def read_raman(
+        self, lines: Optional[list[str]] = None
+    ) -> Tuple[list[float], list[float]]:
         freqlist: list[float] = []
         activlist: list[float] = []
-        with open(self.path, 'r') as file:
-            for line in file:
+        it: Iterator[str]
+        if lines is not None:
+            it = iter(lines)
+        else:
+            it = open(self.path, 'r')
+        try:
+            for line in it:
                 if raman_string in line:
-                    for line in file:
+                    for line in it:
                         if re.search(r"^\s*\d+:", line):
                             parts = line.strip().split()
                             freqlist.append(float(parts[1]))
                             activlist.append(float(parts[2]))
                     break
+        finally:
+            if lines is None:
+                it.close()
         return freqlist, activlist
 
-    def read_vpt2(self) -> Tuple[list[float], list[float]]:
+    def read_vpt2(
+        self, lines: Optional[list[str]] = None
+    ) -> Tuple[list[float], list[float]]:
         freqlist: list[float] = []
         intenslist: list[float] = []
 
-        with open(self.path, 'r') as file:
-            lines = file.readlines()
+        if lines is None:
+            with open(self.path, 'r') as file:
+                lines = file.readlines()
 
         # 1. Parse "Fundamental transitions" table for anharmonic frequencies
         fund_start: Optional[int] = None
@@ -209,18 +246,19 @@ class SpectrumData:
 
     def read_out(self) -> Tuple[list[float], list[float]]:
         with open(self.path, 'r') as file:
-            content = file.read()
+            lines = file.readlines()
+        content = ''.join(lines)
         if vpt2_string in content:
             self.spectrum_type = "vpt2"
-            return self.read_vpt2()
+            return self.read_vpt2(lines)
         if raman_string in content:
             self.spectrum_type = "raman"
-            return self.read_raman()
+            return self.read_raman(lines)
         if ir_string in content:
             self.spectrum_type = "ir"
-            return self.read_ir()
+            return self.read_ir(lines)
         self.spectrum_type = "tddft"
-        return self.read_out_abs()
+        return self.read_out_abs(lines)
 
     def read_asc(self) -> Tuple[list[float], list[float]]:
         wavelengthlist: list[float] = []
