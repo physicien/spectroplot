@@ -154,14 +154,6 @@ Based on `orca_uv` by [Sebastian Dechert](https://github.com/radi0sus/orca_uv)
 - Change the line color/style when the same type of data type is plotted multiple times.
 - Add transmittance mode (-tr/--transmittance) for IR/Raman/VPT2 spectra.
 
-### Bugs
-- B1: Convert ydata to np.ndarray explicitly in plot functions to avoid fragile implicit coercion and NaN on flat data
-- B2: Guard plotType() result against None return to prevent crash on unpack
-- B3: Handle IndexError from malformed .asc/.spectrum files (split()[1] without length check)
-- B4: Fix i_x undefined when xmin == xmax and empty i_x crash in peak detection block
-- B5: Handle mixed IR/Raman/VPT2 input — last-matching if overwrites y_label_use and linewidth
-- B6: Guard esd_palette access against IndexError when root_number.max() == 0
-
 ### Code smells
 - S1: show_plots returns None instead of False
 - S2: is_unique crashes on empty Series
