@@ -154,12 +154,6 @@ Based on `orca_uv` by [Sebastian Dechert](https://github.com/radi0sus/orca_uv)
 - Change the line color/style when the same type of data type is plotted multiple times.
 - Add transmittance mode (-tr/--transmittance) for IR/Raman/VPT2 spectra.
 
-### Naming / docs
-- N1: Fix misleading comment about peak detection requiring x-start at 0
-- N2: Rename show_plots (returns True=skip, opposite of what name suggests)
-- N3: Rename a_label to label_rotation_angle
-- N4: Remove commented-out x_label_nm dead code
-
 ### Performance
 - P1: read_out() reads entire file at once instead of line-by-line
 - P2: No early exit in read_ir/read_raman after IR/Raman section ends
