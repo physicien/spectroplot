@@ -628,7 +628,7 @@ def main():
                         )
 
     #label roots
-    if show_label_roots and show_single_root_area:
+    if show_label_roots and show_single_root_area and df["root_number"].max() > 0:
         esd_palette = sns.color_palette(color_palette,df["root_number"].max())
         for i,v in enumerate(roots_list):
             r_label = "{:d}".format(v[0])
