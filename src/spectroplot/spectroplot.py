@@ -576,12 +576,10 @@ def main():
         full_yrange = row['plt_range_y']
         if full_xrange is None:
             continue
-        if xmin > xmax:
-            i_x = [i for i,v in enumerate(full_xrange) \
-                    if v > xmax and v < xmin ]
-        if xmax > xmin:
-            i_x = [i for i,v in enumerate(full_xrange) \
-                    if v > xmin and v < xmax ]
+        lo, hi = min(xmin, xmax), max(xmin, xmax)
+        i_x = [i for i, v in enumerate(full_xrange) if lo < v < hi]
+        if not i_x:
+            continue
         xrange = full_xrange[min(i_x):max(i_x)]
         yrange = full_yrange[min(i_x):max(i_x)]
         ymax_list.append(max(yrange))
