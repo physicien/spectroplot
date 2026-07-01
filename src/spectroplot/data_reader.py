@@ -90,9 +90,7 @@ class SpectrumData:
                             intenslist.append(
                                 float(line.strip().split()[l2])
                             )
-                    else:
-                        continue    # executed if the inner loop didn't break
-                    break           # executed if the inner loop did break
+                    break
         finally:
             if lines is None:
                 it.close()
