@@ -116,11 +116,17 @@ class SpectrumData:
         try:
             for line in it:
                 if ir_string in line:
+                    seen_data = False
                     for line in it:
+                        if not line.strip():
+                            if seen_data:
+                                break
+                            continue
                         if re.search(r"^\s*\d+:", line):
                             parts = line.strip().split()
                             freqlist.append(float(parts[1]))
                             intenslist.append(float(parts[3]))
+                            seen_data = True
                     break
         finally:
             if lines is None:
@@ -140,11 +146,17 @@ class SpectrumData:
         try:
             for line in it:
                 if raman_string in line:
+                    seen_data = False
                     for line in it:
+                        if not line.strip():
+                            if seen_data:
+                                break
+                            continue
                         if re.search(r"^\s*\d+:", line):
                             parts = line.strip().split()
                             freqlist.append(float(parts[1]))
                             activlist.append(float(parts[2]))
+                            seen_data = True
                     break
         finally:
             if lines is None:
