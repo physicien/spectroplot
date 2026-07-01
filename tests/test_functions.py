@@ -177,8 +177,8 @@ class TestPlotType:
     def test_ev(self):
         assert plotType(False, False, True) == ("ev", 1000)
 
-    def test_none(self):
-        assert plotType(False, False, False) is None
+    def test_none_defaults_to_wn(self):
+        assert plotType(False, False, False) == ("wn", 1)
 
     def test_multiple_but_priority(self):
         assert plotType(True, True, False) == ("nm", 10)

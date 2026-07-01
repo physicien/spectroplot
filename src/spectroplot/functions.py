@@ -96,7 +96,7 @@ def atLeastTwo(a: bool, b: bool, c: bool) -> bool:
     #return true if at least two elements out of three are true
     return a and (b or c) or (b and c)
 
-def plotType(nm: bool, wn: bool, ev: bool) -> Optional[tuple[str, int]]:
+def plotType(nm: bool, wn: bool, ev: bool) -> tuple[str, int]:
     #return the plot type and npt
     if nm:
         return "nm", npt_nm
@@ -104,7 +104,7 @@ def plotType(nm: bool, wn: bool, ev: bool) -> Optional[tuple[str, int]]:
         return "wn", npt_wn
     if ev:
         return "ev", npt_ev
-    return None
+    return "wn", npt_wn
 
 def wntonm(wn: np.ndarray) -> np.ndarray:
     #cm**-1 to nm converter
