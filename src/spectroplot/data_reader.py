@@ -68,7 +68,7 @@ class SpectrumData:
                 #detect ORCA version
                 if "Program Version" in line:
                     version = re.search(r"\d\.\d\.\d", line)
-                    if version and int(version[0][0]) < 6:
+                    if version and int(version[0].split(".")[0]) < 6:
                         l1, l2 = 1, 3
                     else:
                         l1, l2 = 4, 7
