@@ -476,6 +476,9 @@ def main():
     shift_ev = (args.shiftev if args.shiftev is not None else 0.0) \
                * CONV_WNTOEV
 
+    #explicit unit flags override the wn default
+    if ev_plot or nm_plot:
+        wn_plot = False
     if atLeastTwo(nm_plot, wn_plot, ev_plot):
         print("Warning. Multiple types of unit set to true for the "
               "x-axis. Exit.", file=sys.stderr)
