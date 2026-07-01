@@ -163,4 +163,5 @@ Based on `orca_uv` by [Sebastian Dechert](https://github.com/radi0sus/orca_uv)
 ### Planned features
 - Change the line color/style when the same type of data type is plotted multiple times.
 - Add transmittance mode (-tr/--transmittance) for IR/Raman/VPT2 spectra.
+- Use specific unit labels per data type (e.g., IR in % transmittance, Raman in counts) instead of "arb. units". Add `-arb` flag to fall back to arbitrary units. Add double y-axis support or auto-switch to arbitrary units when incompatible types are plotted together.
 
