@@ -1,14 +1,17 @@
 import logging
 import re                           #regex
 
-logger = logging.getLogger(__name__)
 from pathlib import Path            #path processing (replace os)
 from typing import Iterator, Optional, Tuple
+
 from spectroplot.global_constants import (
     specstring_start, specstring_end, ir_string, vpt2_string,
     raman_string,
 )
 from spectroplot._patterns import RE_SPECTRUM_ROOT
+
+logger = logging.getLogger(__name__)
+logger.addHandler(logging.NullHandler())
 
 
 class SpectrumData:
