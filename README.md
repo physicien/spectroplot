@@ -40,7 +40,7 @@ It will save the plot as SVG: `spectrum.svg`
 
 ```console
 # TD-DFT absorption in nm
-spectroplot data/TD-DFT/UV_c60-Ih.out -s -n
+spectroplot data/TD-DFT/UV_c60-Ih.out -s -n -pnm
 ```
 
 ![TD-DFT absorption](examples/td-dft_abs.png)
