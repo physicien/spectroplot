@@ -188,17 +188,20 @@ class SpectrumData:
             return freqlist, intenslist
 
         fund_data: dict[int, float] = {}
-        for line in lines[fund_start + 4:]:
-            if line.strip().startswith('---'):
-                break
+        started = False
+        for line in lines[fund_start + 1:]:
             parts = line.strip().split()
             if len(parts) >= 3:
                 try:
                     mode = int(parts[0])
                     v_fund = float(parts[2])
+                    started = True
                     fund_data[mode] = v_fund
                 except ValueError:
-                    continue
+                    if started:
+                        break
+            elif started:
+                break
 
         # 2. Parse last "IR Intensities" section for intensities
         ir_start: Optional[int] = None
@@ -212,19 +215,20 @@ class SpectrumData:
             return freqlist, intenslist
 
         ir_intensities: dict[int, float] = {}
-        for line in lines[ir_start + 5:]:
-            stripped = line.strip()
-            if not stripped or stripped.startswith('-') \
-                    or stripped.startswith('Calculate'):
-                break
-            parts = stripped.split()
+        started = False
+        for line in lines[ir_start + 1:]:
+            parts = line.strip().split()
             if len(parts) >= 7:
                 try:
                     mode = int(parts[0])
                     intensity = float(parts[2])
+                    started = True
                     ir_intensities[mode] = intensity
                 except ValueError:
-                    continue
+                    if started:
+                        break
+            elif started:
+                break
 
         # 3. Match fundamental mode N with IR intensity at mode N+6
         self.vpt2_nfund = len(fund_data)
@@ -244,20 +248,25 @@ class SpectrumData:
                 break
 
         if overt_start is not None:
-            for line in lines[overt_start + 4:]:
+            started = False
+            for line in lines[overt_start + 1:]:
                 stripped = line.strip()
-                if not stripped or stripped.startswith('='):
-                    break
+                if not stripped:
+                    continue
                 parts = stripped.split()
                 if len(parts) >= 6:
                     try:
                         if parts[0].isdigit() and parts[1].isdigit():
                             freq = float(parts[2])
                             intensity = float(parts[4])
+                            started = True
                             freqlist.append(freq)
                             intenslist.append(intensity)
                     except (ValueError, IndexError):
-                        continue
+                        if started:
+                            break
+                elif started:
+                    break
 
         return freqlist, intenslist
 
