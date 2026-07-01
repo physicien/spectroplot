@@ -2,7 +2,7 @@ import sys
 sys.path.insert(0, "src")
 
 from spectroplot.data_reader import SpectrumData
-from spectroplot.global_constants import specstring_start, specstring_end
+from spectroplot.global_constants import SPECSTRING_START, SPECSTRING_END
 
 
 DATA_DIR = "data"
@@ -347,20 +347,20 @@ class TestReadVpt2Isolation:
 
 ORCA5_ABS_LINES = [
     "Program Version 5.0.2\n",
-    specstring_start + "\n",
+    SPECSTRING_START + "\n",
     " 1   10000.0  0.500  0.100\n",
     " 2   20000.0  0.300  0.200\n",
     " 3   30000.0  0.100  0.050\n",
-    specstring_end + "\n",
+    SPECSTRING_END + "\n",
 ]
 
 ORCA6_ABS_LINES = [
     "Program Version 6.0.0\n",
-    specstring_start + "\n",
+    SPECSTRING_START + "\n",
     " 1   10000.0  10000.0  10000.0  10000.0  0.500  0.100  0.050\n",
     " 2   20000.0  20000.0  20000.0  20000.0  0.300  0.200  0.100\n",
     " 3   30000.0  30000.0  30000.0  30000.0  0.100  0.050  0.025\n",
-    specstring_end + "\n",
+    SPECSTRING_END + "\n",
 ]
 
 

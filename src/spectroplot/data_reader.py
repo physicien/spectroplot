@@ -5,8 +5,8 @@ from pathlib import Path            #path processing (replace os)
 from typing import Iterator, Optional, Tuple
 
 from spectroplot.global_constants import (
-    specstring_start, specstring_end, ir_string, vpt2_string,
-    raman_string,
+    SPECSTRING_START, SPECSTRING_END, IR_STRING, VPT2_STRING,
+    RAMAN_STRING,
 )
 from spectroplot._patterns import RE_SPECTRUM_ROOT
 
@@ -73,11 +73,11 @@ class SpectrumData:
                     else:
                         l1, l2 = 4, 7
                 #start extract text
-                if specstring_start in line:
+                if SPECSTRING_START in line:
                     #found UV data in orca.out
                     found_uv_section = True
                     for line in it:
-                        if specstring_end in line:
+                        if SPECSTRING_END in line:
                             #stop extract text
                             break
                         #only recognize lines that start with number
@@ -98,7 +98,7 @@ class SpectrumData:
         #no UV data in orca.out
         if not found_uv_section:
             raise ValueError(
-                f"'{specstring_start}' not found in '{self.path}'"
+                f"'{SPECSTRING_START}' not found in '{self.path}'"
             )
 
         #return data from orca.out
@@ -116,7 +116,7 @@ class SpectrumData:
             it = open(self.path, 'r')
         try:
             for line in it:
-                if ir_string in line:
+                if IR_STRING in line:
                     seen_data = False
                     for line in it:
                         if not line.strip():
@@ -146,7 +146,7 @@ class SpectrumData:
             it = open(self.path, 'r')
         try:
             for line in it:
-                if raman_string in line:
+                if RAMAN_STRING in line:
                     seen_data = False
                     for line in it:
                         if not line.strip():
@@ -272,13 +272,13 @@ class SpectrumData:
         with open(self.path, 'r') as file:
             lines = file.readlines()
         content = ''.join(lines)
-        if vpt2_string in content:
+        if VPT2_STRING in content:
             self.spectrum_type = "vpt2"
             return self.read_vpt2(lines)
-        if raman_string in content:
+        if RAMAN_STRING in content:
             self.spectrum_type = "raman"
             return self.read_raman(lines)
-        if ir_string in content:
+        if IR_STRING in content:
             self.spectrum_type = "ir"
             return self.read_ir(lines)
         self.spectrum_type = "tddft"

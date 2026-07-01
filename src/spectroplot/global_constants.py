@@ -43,15 +43,15 @@ output_name = "spectrum"                #output file name
 
 #CONSTANTS SECTION - go away if you don't know what you're doing
 #start reading orca.out for VPT2 data from here
-vpt2_string = 'ORCA VPT2/GVPT2 Analysis' #start reading orca.out for VPT2 data
+VPT2_STRING = 'ORCA VPT2/GVPT2 Analysis' #start reading orca.out for VPT2 data
 #start reading orca.out for IR data from here
-ir_string = 'IR SPECTRUM'                #start reading orca.out for IR data
+IR_STRING = 'IR SPECTRUM'                #start reading orca.out for IR data
 #start reading orca.out for Raman data from here
-raman_string = 'RAMAN SPECTRUM'          #start reading orca.out for Raman data
+RAMAN_STRING = 'RAMAN SPECTRUM'          #start reading orca.out for Raman data
 #start reading orca.out for uv data from here
-specstring_start = 'ABSORPTION SPECTRUM VIA TRANSITION ELECTRIC DIPOLE MOMENTS'
+SPECSTRING_START = 'ABSORPTION SPECTRUM VIA TRANSITION ELECTRIC DIPOLE MOMENTS'
 #stop reading orca.out from here
-specstring_end = 'ABSORPTION SPECTRUM VIA TRANSITION VELOCITY DIPOLE MOMENTS'
+SPECSTRING_END = 'ABSORPTION SPECTRUM VIA TRANSITION VELOCITY DIPOLE MOMENTS'
 #pattern to match ESD root file extension (.spectrum.rootX)
 RE_SPECTRUM_ROOT_PATTERN = r"\.spectrum\.root\d+$"
 w_nm = 20       #w = line width for broadening - nm, FWHM
@@ -62,5 +62,5 @@ w_raman = 20     #w = line width for broadening - Raman, FWHM (cm**-1)
 npt_nm = 10     #npt = nb of pts per unit to calculate the line shape in nm
 npt_wn = 1      #npt = nb of pts per unit to calculate the line shape in cm**-1
 npt_ev = 1000   #npt = nb of pts per unit to calculate the line shape in eV
-conv_wntoev = 8065.54   #conversion factor from cm**-1 to eV
+CONV_WNTOEV = 8065.54   #conversion factor from cm**-1 to eV
 

@@ -1,7 +1,7 @@
 from typing import Optional
 import numpy as np                      #element-wise tensor processing
 import pandas as pd                     #dataframe processing
-from spectroplot.global_constants import npt_nm, npt_wn, npt_ev, conv_wntoev
+from spectroplot.global_constants import npt_nm, npt_wn, npt_ev, CONV_WNTOEV
 from spectroplot._patterns import RE_SPECTRUM_ROOT
 
 def show_plots(ext: str, s: list[bool]) -> bool:
@@ -114,7 +114,7 @@ def wntonm(wn: np.ndarray) -> np.ndarray:
 
 def wntoev(wn: np.ndarray) -> np.ndarray:
     #cm**-1 to eV converter
-    return np.asarray(wn) / conv_wntoev
+    return np.asarray(wn) / CONV_WNTOEV
 
 def nmtown(wl: np.ndarray) -> np.ndarray:
     #nm to cm**-1 converter
@@ -122,7 +122,7 @@ def nmtown(wl: np.ndarray) -> np.ndarray:
 
 def nmtoev(wl: np.ndarray) -> np.ndarray:
     #nm to eV converter
-    return 1e7 / np.asarray(wl) / conv_wntoev
+    return 1e7 / np.asarray(wl) / CONV_WNTOEV
 
 def unitConverter(data: np.ndarray, ext: str, unit: str) -> np.ndarray:
     #convert the x-axis data to the right units (nm, cm**-1, eV)

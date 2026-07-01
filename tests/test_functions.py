@@ -12,7 +12,7 @@ from spectroplot.functions import (
     show_plots, is_unique, rootSum,
     xdataPrep, xdatamin, xdatamax, plotxrange,
 )
-from spectroplot.global_constants import conv_wntoev
+from spectroplot.global_constants import CONV_WNTOEV
 
 # Strategies for property-based converter tests
 positive_floats = st.floats(min_value=1, max_value=1e6, allow_infinity=False,

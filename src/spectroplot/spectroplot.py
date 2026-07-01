@@ -21,7 +21,7 @@ from spectroplot.global_constants import (
     y_label, y_label_PL, y_label_ir, y_label_raman,
     x_label_wn, x_label_ev, x_label_nm,
     label_rotation_angle, figure_dpi, acs_w, acs_h, output_name,
-    conv_wntoev, w_nm, w_wn, w_ev, w_ir, w_raman,
+    CONV_WNTOEV, w_nm, w_wn, w_ev, w_ir, w_raman,
 )
 from spectroplot._patterns import RE_SPECTRUM_ROOT
 from spectroplot.functions import (
@@ -328,7 +328,7 @@ def main():
     raman_input = False
     vpt2_input = False
     shift_wn = args.shiftwn if args.shiftwn is not None else 0.0
-    shift_ev = (args.shiftev if args.shiftev is not None else 0.0) * conv_wntoev
+    shift_ev = (args.shiftev if args.shiftev is not None else 0.0) * CONV_WNTOEV
 
     #check if more than one plotXX are true - exit if true
     #if false, set the plot type
