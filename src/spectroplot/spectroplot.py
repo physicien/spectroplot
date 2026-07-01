@@ -20,7 +20,7 @@ from spectroplot.global_constants import (
     show_minor_ticks, show_grid, show_legend, linear_locator,
     y_label, y_label_PL, y_label_ir, y_label_raman,
     x_label_wn, x_label_ev, x_label_nm,
-    a_label, figure_dpi, acs_w, acs_h, output_name,
+    label_rotation_angle, figure_dpi, acs_w, acs_h, output_name,
     conv_wntoev, w_nm, w_wn, w_ev, w_ir, w_raman,
 )
 from spectroplot._patterns import RE_SPECTRUM_ROOT
@@ -424,11 +424,9 @@ def main():
                 "xdata": spectrum.data[0],
                 "ydata": spectrum.data[1],
         }
-        #skip data if this type of plot is not requested
+        #add the data to the dataset if this plot type is requested
         if show_plots(spectrum.filetype,shows_list):
-            continue
-        #add the data to the dataset
-        spectra_list.append(spectrum_data)
+            spectra_list.append(spectrum_data)
     if not spectra_list:
         #check if spectra_list is empty - exit if true
         print("Warning. You are requesting an empty plot. Exit.", file=sys.stderr)
@@ -486,7 +484,7 @@ def main():
     sns.set_palette(palette)
     fig, ax = plt.subplots()
 
-    #plotrange must start at 0 for peak detection
+    #x-axis grid spanning from 0 to the plot limit
     plt_range_x = plotxrange(df,args.endx,npt)
 
     #All the plots
@@ -620,7 +618,7 @@ def main():
             ax.annotate(p_label,
                         xy=(v[0],v[1]),
                         ha="center",
-                        rotation=a_label,
+                        rotation=label_rotation_angle,
                         size=s4,
                         xytext=(0,5),
                         textcoords='offset points',

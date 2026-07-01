@@ -6,13 +6,12 @@ from spectroplot._patterns import RE_SPECTRUM_ROOT
 
 def show_plots(ext: str, s: list[bool]) -> bool:
     #check if the file is needed for the plot asked by the user
-    if ext == ".out" and not (s[0] or s[1] or s[2] or s[3]):
-        return True
-    elif ext == ".asc" and not s[4]:
-        return True
-    elif (ext == ".spectrum" or RE_SPECTRUM_ROOT.search(ext)) and \
-            not (s[5] or s[6]):
-        return True
+    if ext == ".out":
+        return s[0] or s[1] or s[2] or s[3]
+    elif ext == ".asc":
+        return s[4]
+    elif ext == ".spectrum" or RE_SPECTRUM_ROOT.search(ext):
+        return s[5] or s[6]
     return False
 
 def is_unique(s: pd.Series) -> bool:
