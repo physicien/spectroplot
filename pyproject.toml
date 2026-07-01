@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "spectroplot"
+version = "0.1.0"
+description = "Plot optical spectra from ORCA output, spectrum, and ESD root files"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy>=1.21",
+    "pandas>=1.3",
+    "matplotlib>=3.4",
+    "seaborn>=0.11",
+    "scipy>=1.7",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7", "hypothesis>=6", "ruff>=0.4"]
+
+[project.scripts]
+spectroplot = "spectroplot:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
