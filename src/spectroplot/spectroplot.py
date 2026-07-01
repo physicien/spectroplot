@@ -37,7 +37,7 @@ def _plot_tddft(ax, row, i, plt_range_x, w, ls_gauss, palette, lw,
     lineshape_sum = []
     temp_lineshape_sum = []
     xdata = row["xdata_plot"]
-    ydata = row["ydata"]
+    ydata = np.asarray(row["ydata"], dtype=float)
 
     for index, wn in enumerate(xdata):
         temp_lineshape_sum.append(lineshape(ydata[index], plt_range_x, wn, w,
@@ -77,7 +77,7 @@ def _plot_tddft(ax, row, i, plt_range_x, w, ls_gauss, palette, lw,
 
 def _plot_experimental(ax, row, i, palette, lw, plot_data):
     xdata = row["xdata_plot"]
-    ydata = normalization(row["ydata"]) * ex_fac
+    ydata = normalization(np.asarray(row["ydata"], dtype=float)) * ex_fac
     plot_data[i] = (xdata, ydata)
     if show_exp_spectrum:
         ax.plot(xdata, ydata, color=palette[0], linewidth=lw,
@@ -86,7 +86,7 @@ def _plot_experimental(ax, row, i, palette, lw, plot_data):
 
 def _plot_esd(ax, row, i, palette, lw, plot_data):
     xdata = row["xdata_plot"]
-    ydata = normalization(row["ydata"]) * esd_fac
+    ydata = normalization(np.asarray(row["ydata"], dtype=float)) * esd_fac
     plot_data[i] = (xdata, ydata)
     if show_esd_spectrum:
         ax.plot(xdata, ydata, color=palette[1], linewidth=lw,
@@ -95,7 +95,7 @@ def _plot_esd(ax, row, i, palette, lw, plot_data):
 
 def _plot_esd_root(ax, row, i, root_sum, lw, df, plot_data):
     xdata = row["xdata_plot"]
-    ydata = row["ydata"]
+    ydata = np.asarray(row["ydata"], dtype=float)
     index = row["root_number"] - 1
     temp_range = root_sum["ydata"][0]
     temp_min = min(temp_range)
