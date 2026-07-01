@@ -388,7 +388,6 @@ def main():
                         )
 
     parser.add_argument('-pwn', '--plotwn',
-                        default=1,
                         action='store_true',
                         help='plot the spectrum in cm**-1'
                         )
@@ -476,9 +475,9 @@ def main():
     shift_ev = (args.shiftev if args.shiftev is not None else 0.0) \
                * CONV_WNTOEV
 
-    #explicit unit flags override the wn default
-    if ev_plot or nm_plot:
-        wn_plot = False
+    #default to wavenumber if no unit flag is set
+    if not (nm_plot or wn_plot or ev_plot):
+        wn_plot = True
     if atLeastTwo(nm_plot, wn_plot, ev_plot):
         print("Warning. Multiple types of unit set to true for the "
               "x-axis. Exit.", file=sys.stderr)
