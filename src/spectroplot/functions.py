@@ -30,7 +30,7 @@ def rootSum(df: pd.DataFrame) -> pd.DataFrame:
         raise ValueError("Roots from different systems.")
     name = data["name"].iloc[0]
     #check if all the roots have the same xdata
-    samex = [data["xdata"].iloc[0] == row["xdata"] for i,row in data.iterrows()]
+    samex = [np.array_equal(data["xdata"].iloc[0], row["xdata"]) for i,row in data.iterrows()]
     if not all(samex):
         raise ValueError("Roots have different xdata.")
     else:
