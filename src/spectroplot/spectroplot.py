@@ -18,8 +18,7 @@ from spectroplot.global_constants import (
     show_esd_spectrum, show_single_root_area,
     show_label_peaks, show_label_roots,
     show_minor_ticks, show_grid, show_legend, linear_locator,
-    y_label, y_label_PL, y_label_ir, y_label_raman,
-    x_label_wn, x_label_ev, x_label_nm,
+    y_label, y_label_PL, x_label_wn, x_label_ev, x_label_nm,
     label_rotation_angle, figure_dpi, acs_w, acs_h, output_name,
     CONV_WNTOEV, w_nm, w_wn, w_ev, w_ir, w_raman,
 )
@@ -468,9 +467,6 @@ def main():
     wn_plot = args.plotwn
     ev_plot = args.plotev
     ls_gauss = args.lineshape_gauss
-    ir_input = False
-    raman_input = False
-    vpt2_input = False
     shift_wn = args.shiftwn if args.shiftwn is not None else 0.0
     shift_ev = (args.shiftev if args.shiftev is not None else 0.0) \
                * CONV_WNTOEV
@@ -547,12 +543,6 @@ def main():
         except (ValueError, IOError) as e:
             print(f"Warning: {e}", file=sys.stderr)
             continue
-        if spectrum.spectrum_type == "ir":
-            ir_input = True
-        if spectrum.spectrum_type == "raman":
-            raman_input = True
-        if spectrum.spectrum_type == "vpt2":
-            vpt2_input = True
         spectrum_data = {
             "path": spectrum.path,
             "name": spectrum.name,

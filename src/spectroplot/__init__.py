@@ -8,7 +8,7 @@ main
     CLI entry point.
 """
 
-from spectroplot.data_reader import SpectrumData
+from spectroplot.data_reader import SpectrumData as SpectrumData
 
 
 def main() -> None:
