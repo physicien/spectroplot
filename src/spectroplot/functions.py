@@ -16,8 +16,11 @@ def show_plots(ext: str, s: list[bool]) -> bool:
     return False
 
 def is_unique(s: pd.Series) -> bool:
-    #check if all strings are the same 
+    #check if all strings are the same
+    #an empty series trivially has all identical elements
     a = s.to_numpy()
+    if len(a) == 0:
+        return True
     return bool((a[0] == a).all())
 
 def rootSum(df: pd.DataFrame) -> pd.DataFrame:
