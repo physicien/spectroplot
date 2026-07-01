@@ -26,8 +26,7 @@ show_label_roots = True             #show root labels if True
 show_minor_ticks = True             #show minor ticks if True
 show_grid = False                   #show grid if True
 show_legend = True                  #show the legend
-linear_locator = False              #tick locations at the beginning and end
-                                    #of the spectrum x-axis, evenly spaced
+linear_locator = None               #number of ticks (None = automatic, int = fixed count)
 y_label = "Absorbance (arb. units)"      #label of the y-axis - ABS (default)
 y_label_PL = "PL Intensity (arb. units)"#label of the y-axis - PL
 y_label_ir = "IR Intensity (arb. units)"#label of the y-axis - IR

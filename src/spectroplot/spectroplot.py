@@ -642,8 +642,8 @@ def main():
                         )
 
     #tick locations at the beginning and end of the spectrum x-axis, evenly spaced
-    if linear_locator:
-        ax.xaxis.set_major_locator(plt.LinearLocator())
+    if linear_locator is not None:
+        ax.xaxis.set_major_locator(plt.LinearLocator(numticks=linear_locator))
 
     #tick parameters
     ax.tick_params(which='major',length=major_tick)
