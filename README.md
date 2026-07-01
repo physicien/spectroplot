@@ -154,16 +154,3 @@ Based on `orca_uv` by [Sebastian Dechert](https://github.com/radi0sus/orca_uv)
 - Change the line color/style when the same type of data type is plotted multiple times.
 - Add transmittance mode (-tr/--transmittance) for IR/Raman/VPT2 spectra.
 
-### Minor
-- M1: ORCA version check uses first char only (wrong for 10+)
-- M2: Hardcoded mode + 6 magic number in VPT2
-- M3: Hardcoded skip offsets +4/+5 in VPT2 parsing
-- M4: Fragile for...else: continue; break pattern
-- M5: Docstring says "strings" but works on any type
-- M6: Mutable module-level constants
-- M7: Unused loop variable i
-- M8: normalization returns NaN for constant input (division by zero)
-- M9: roundup/rounddown silently return x when no unit flag set
-- M10: read_name doesn't read, just parses path
-- M11: No version pins in pyproject.toml
-- M12: npt_wn=1 may produce jagged peaks for sharp lines
