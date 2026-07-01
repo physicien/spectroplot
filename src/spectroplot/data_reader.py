@@ -22,14 +22,14 @@ class SpectrumData:
 
     def __init__(self, path: str) -> None:
         self.path: str = path
-        self.name: str = self.read_name()
+        self.name: str = self.parse_name()
         self.filetype: str = self.read_ext()
         self.rootnumber: int = self.read_root()
         self.spectrum_type: str = ""
         self.vpt2_nfund: int = 0
         self.data: list[list[float]] = self.read_data()
 
-    def read_name(self) -> str:
+    def parse_name(self) -> str:
         p = Path(self.path)
         #remove all suffixes to get the base name (handles multi-dot extensions)
         name = p.name[:-len(''.join(p.suffixes))] if p.suffixes else p.stem
