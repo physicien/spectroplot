@@ -64,3 +64,6 @@ npt_wn = 1      #npt = nb of pts per unit to calculate the line shape in cm**-1
 npt_ev = 1000   #npt = nb of pts per unit to calculate the line shape in eV
 conv_wntoev = 8065.54   #conversion factor from cm**-1 to eV
 
+#pattern to match ESD root file extension (.spectrum.rootX)
+RE_SPECTRUM_ROOT_PATTERN = r"\.spectrum\.root\d+$"
+

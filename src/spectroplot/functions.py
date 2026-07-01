@@ -1,8 +1,8 @@
-import re                               #regex
 from typing import Optional
 import numpy as np                      #element-wise tensor processing
 import pandas as pd                     #dataframe processing
 from spectroplot.global_constants import npt_nm, npt_wn, npt_ev, conv_wntoev
+from spectroplot._patterns import RE_SPECTRUM_ROOT
 
 def show_plots(ext: str, s: list[bool]) -> bool:
     #check if the file is needed for the plot asked by the user
@@ -10,7 +10,7 @@ def show_plots(ext: str, s: list[bool]) -> bool:
         return True
     elif ext == ".asc" and not s[4]:
         return True
-    elif (ext == ".spectrum" or re.search(r"\.spectrum\.root\d+$", ext)) and \
+    elif (ext == ".spectrum" or RE_SPECTRUM_ROOT.search(ext)) and \
             not (s[5] or s[6]):
         return True
     return False

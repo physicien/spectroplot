@@ -1,6 +1,4 @@
-#!/usr/bin/python3
 import sys                              #sys files processing
-import re                               #regex
 from pathlib import Path                #path processing
 import argparse                         #argument parser
 import numpy as np                      #element-wise tensor processing
@@ -24,6 +22,7 @@ from spectroplot.global_constants import (
     a_label, figure_dpi, acs_w, acs_h, output_name,
     conv_wntoev, w_nm, w_wn, w_ev, w_ir, w_raman,
 )
+from spectroplot._patterns import RE_SPECTRUM_ROOT
 from spectroplot.functions import (
     atLeastTwo, plotType, show_plots, rootSum,
     xdataPrep, xdatamin, xdatamax, plotxrange,
@@ -512,7 +511,7 @@ def main():
             _plot_experimental(ax, row, i, palette, lw, plot_data)
         elif row["ext"] == ".spectrum":
             _plot_esd(ax, row, i, palette, lw, plot_data)
-        elif re.search(r"\.spectrum\.root\d+$", row["ext"]):
+        elif RE_SPECTRUM_ROOT.search(row["ext"]):
             _plot_esd_root(ax, row, i, root_sum, lw, df, plot_data)
 
     if types_plotted:
@@ -583,7 +582,7 @@ def main():
         ymax_list.append(max(yrange))
 
         #peaks detection for labeling
-        if show_label_peaks and not re.search(r"\.spectrum\.root\d+$", row["ext"]):
+        if show_label_peaks and not RE_SPECTRUM_ROOT.search(row["ext"]):
             #peaks detection: skip peaks too close (<1% of x-range) or too weak
             x_range_span = xrange[-1] - xrange[0]
             dist_samples = max(1, int(x_range_span * npt * 0.01))
@@ -595,7 +594,7 @@ def main():
                     peaks_list.append([xrange[peak_j],yrange[peak_j]])
 
         #roots detection for labeling
-        if show_label_roots and re.search(r"\.spectrum\.root\d+$", row["ext"]):
+        if show_label_roots and RE_SPECTRUM_ROOT.search(row["ext"]):
             #root peaks detection
             peaks , _ = find_peaks(yrange,prominence=0.01)
             xp_root = [xrange[i] for i in peaks]

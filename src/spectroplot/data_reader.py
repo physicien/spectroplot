@@ -8,6 +8,7 @@ from spectroplot.global_constants import (
     specstring_start, specstring_end, ir_string, vpt2_string,
     raman_string,
 )
+from spectroplot._patterns import RE_SPECTRUM_ROOT
 
 
 class SpectrumData:
@@ -38,7 +39,7 @@ class SpectrumData:
 
     def read_root(self) -> int:
         fext = self.filetype
-        if re.search(r"\.spectrum\.root\d+$", fext):
+        if RE_SPECTRUM_ROOT.search(fext):
             return int(next(re.finditer(r'\d+$', fext)).group(0))
         return 0
 
@@ -266,7 +267,7 @@ class SpectrumData:
         elif fext == '.asc':
             self.spectrum_type = "experimental"
             xlist, ylist = self.read_asc()
-        elif fext == '.spectrum' or re.search(r"\.spectrum\.root\d+$", fext):
+        elif fext == '.spectrum' or RE_SPECTRUM_ROOT.search(fext):
             self.spectrum_type = "esd"
             xlist, ylist = self.read_spectrum()
         else:
