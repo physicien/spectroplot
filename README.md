@@ -74,6 +74,13 @@ spectroplot data/experimental/C60_PL.asc -s -n -PL
 ![PL spectrum](examples/expt_pl.png)
 
 ```console
+# Experimental IR spectrum
+spectroplot data/experimental/C60_PL.asc -s -n -IR
+```
+
+![Experimental IR spectrum](examples/expt_ir.png)
+
+```console
 # Custom output as PNG
 spectroplot data/TD-DFT/UV_c60-Ih.out -o spectrum.png
 ```
@@ -112,6 +119,9 @@ spectroplot data/Raman/RAM_c60-Ih_r.out -s -n -x0 200 -x1 1650
 - `-pwn` , optional: plot the wave number (energy, cm<sup>-1</sup>) spectrum (default)
 - `-pev` , optional: plot the electron-volt (energy, eV) spectrum
 - `-lsg` , optional: use the gaussian line shape function (default is lorentzian line shape)
+- `-IR` , optional: label experimental data as IR spectrum (changes y-axis label)
+- `-ABS` , optional: label experimental data as absorption spectrum (changes y-axis label)
+- `-Raman` , optional: label experimental data as Raman spectrum (changes y-axis label)
 - `-PL` , optional: use the PL Intensity y-axis label (default is Absorbance)
 - `-wnm` `N` , optional: line width of the line shape for the nm scale (default is `N = 20`)
 - `-wwn` `N` , optional: line width of the line shape for the cm<sup>-1</sup> scale (default is `N = 1000`)
