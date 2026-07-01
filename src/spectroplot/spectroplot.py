@@ -298,14 +298,14 @@ def main():
     #horizontal shift in cm**-1
     parser.add_argument('-swn','--shiftwn',
                         type=float,
-                        default=0.0,
+                        default=None,
                         help='shift the spectrum in cm**-1'
                         )
 
     #horizontal shift in eV
     parser.add_argument('-sev','--shiftev',
                         type=float,
-                        default=0.0,
+                        default=None,
                         help='shift the spectrum in eV'
                         )
 
@@ -327,8 +327,8 @@ def main():
     ir_input = False
     raman_input = False
     vpt2_input = False
-    shift_wn = args.shiftwn             #shift the spectrum in cm**-1
-    shift_ev = args.shiftev*conv_wntoev #shift the spectrum in eV
+    shift_wn = args.shiftwn if args.shiftwn is not None else 0.0
+    shift_ev = (args.shiftev if args.shiftev is not None else 0.0) * conv_wntoev
 
     #check if more than one plotXX are true - exit if true
     #if false, set the plot type
@@ -383,7 +383,7 @@ def main():
         sys.exit(1)
 
     #check if shiftwn and shiftev are both defined - exit if true
-    if args.shiftwn != 0 and args.shiftev != 0:
+    if args.shiftwn is not None and args.shiftev is not None:
         print("Warning. Both shifts in cm**-1 and in eV are defined. Exit.", file=sys.stderr)
         sys.exit(1)
     else:
