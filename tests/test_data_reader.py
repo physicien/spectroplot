@@ -1,3 +1,9 @@
+"""Tests for the SpectrumData file reader.
+
+Created on June 29, 2026
+@author: Emmanuel Bourret
+"""
+
 import sys
 sys.path.insert(0, "src")
 

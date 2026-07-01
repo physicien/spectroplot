@@ -7,6 +7,7 @@ name = "spectroplot"
 version = "0.1.0"
 description = "Plot optical spectra from ORCA output, spectrum, and ESD root files"
 requires-python = ">=3.10"
+license = {text = "BSD-3-Clause"}
 dependencies = [
     "numpy>=1.21",
     "pandas>=1.3",

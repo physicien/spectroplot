@@ -1,3 +1,9 @@
+"""Integration tests for the full spectroplot pipeline.
+
+Created on June 30, 2026
+@author: Emmanuel Bourret
+"""
+
 import sys
 from pathlib import Path
 from unittest.mock import MagicMock, patch
