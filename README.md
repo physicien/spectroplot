@@ -154,17 +154,6 @@ Based on `orca_uv` by [Sebastian Dechert](https://github.com/radi0sus/orca_uv)
 - Change the line color/style when the same type of data type is plotted multiple times.
 - Add transmittance mode (-tr/--transmittance) for IR/Raman/VPT2 spectra.
 
-### Code smells
-- S1: show_plots returns None instead of False
-- S2: is_unique crashes on empty Series
-- S3: Replace list == list with np.array_equal
-- S4: Compile root regex once in global_constants instead of 6 locations
-- S5: Rename df parameter to row (it's a pd.Series, not DataFrame)
-- S6: Fix plot_data type annotation — tuples can hold None
-- S7: Print warnings to stderr instead of stdout
-- S8: Decimal shift check against zero is fragile
-- S9: LinearLocator() with no args doesn't force tick count
-
 ### Naming / docs
 - N1: Fix misleading comment about peak detection requiring x-start at 0
 - N2: Rename show_plots (returns True=skip, opposite of what name suggests)
