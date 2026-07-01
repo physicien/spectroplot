@@ -1,4 +1,5 @@
 import sys                              #sys files processing
+from typing import Optional
 from pathlib import Path                #path processing
 import argparse                         #argument parser
 import numpy as np                      #element-wise tensor processing
@@ -489,7 +490,7 @@ def main():
     plt_range_x = plotxrange(df,args.endx,npt)
 
     #All the plots
-    plot_data: dict[int, tuple[np.ndarray, np.ndarray]] = {}
+    plot_data: dict[int, tuple[Optional[np.ndarray], Optional[np.ndarray]]] = {}
     types_plotted: set[str] = set()
     for i, row in df.iterrows():
         if row["ext"] == ".out" and row["spectrum_type"] == "ir":
