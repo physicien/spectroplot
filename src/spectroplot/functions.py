@@ -64,7 +64,7 @@ def roundup(x: float, ev_plot: bool, wn_plot: bool, nm_plot: bool) -> float:
         return x if x % 100 == 0 else x + 100 - x % 100
     elif nm_plot:
         return x if x % 10 == 0 else x + 10 - x % 10
-    return x
+    raise ValueError("No unit plot flag set")
 
 def rounddown(x: float, ev_plot: bool, wn_plot: bool, nm_plot: bool) -> float:
     #round to previous 1 or 10 or 100
@@ -74,7 +74,7 @@ def rounddown(x: float, ev_plot: bool, wn_plot: bool, nm_plot: bool) -> float:
         return x if x % 100 == 0 else x - x % 100
     elif nm_plot:
         return x if x % 10 == 0 else x - x % 10
-    return x
+    raise ValueError("No unit plot flag set")
 
 def lineshape(a: float, m: np.ndarray, x: float, w: float,
               ls_gauss: bool) -> np.ndarray:
