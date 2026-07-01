@@ -436,17 +436,6 @@ def main():
 
     #select y-axis label and linewidth based on input type
     y_label_use = y_label    # default from global_constants
-    if ir_input:
-        y_label_use = y_label_ir
-        w = w_ir
-    if raman_input:
-        y_label_use = y_label_raman
-        w = w_raman
-    if vpt2_input:
-        y_label_use = y_label_ir
-        w = w_ir
-    if args.axisPL:
-        y_label_use = y_label_PL
 
     #sort the dataset and convert it into a dataframe
     data_list = sorted(spectra_list, key=lambda d: float(d["root_number"]))
@@ -502,15 +491,19 @@ def main():
 
     #All the plots
     plot_data: dict[int, tuple[np.ndarray, np.ndarray]] = {}
+    types_plotted: set[str] = set()
     for i, row in df.iterrows():
         if row["ext"] == ".out" and row["spectrum_type"] == "ir":
-            _plot_ir(ax, row, i, plt_range_x, w, ls_gauss, palette, lw,
+            types_plotted.add("IR")
+            _plot_ir(ax, row, i, plt_range_x, w_ir, ls_gauss, palette, lw,
                      plot_data)
         elif row["ext"] == ".out" and row["spectrum_type"] == "raman":
-            _plot_raman(ax, row, i, plt_range_x, w, ls_gauss, palette, lw,
-                        plot_data)
+            types_plotted.add("Raman")
+            _plot_raman(ax, row, i, plt_range_x, w_raman, ls_gauss, palette,
+                        lw, plot_data)
         elif row["ext"] == ".out" and row["spectrum_type"] == "vpt2":
-            _plot_vpt2(ax, row, i, plt_range_x, w, ls_gauss, palette, lw,
+            types_plotted.add("IR")
+            _plot_vpt2(ax, row, i, plt_range_x, w_ir, ls_gauss, palette, lw,
                        plot_data)
         elif row["ext"] == ".out":
             _plot_tddft(ax, row, i, plt_range_x, w, ls_gauss, palette, lw,
@@ -521,6 +514,11 @@ def main():
             _plot_esd(ax, row, i, palette, lw, plot_data)
         elif re.search(r"\.spectrum\.root\d+$", row["ext"]):
             _plot_esd_root(ax, row, i, root_sum, lw, df, plot_data)
+
+    if types_plotted:
+        y_label_use = " / ".join(sorted(types_plotted)) + " Intensity (arb. units)"
+    if args.axisPL:
+        y_label_use = y_label_PL
 
     #legend
     if show_legend:
