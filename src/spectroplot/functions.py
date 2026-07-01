@@ -4,7 +4,7 @@ import numpy as np                      #element-wise tensor processing
 import pandas as pd                     #dataframe processing
 from spectroplot.global_constants import npt_nm, npt_wn, npt_ev, conv_wntoev
 
-def show_plots(ext: str, s: list[bool]) -> Optional[bool]:
+def show_plots(ext: str, s: list[bool]) -> bool:
     #check if the file is needed for the plot asked by the user
     if ext == ".out" and not (s[0] or s[1] or s[2] or s[3]):
         return True
@@ -13,7 +13,7 @@ def show_plots(ext: str, s: list[bool]) -> Optional[bool]:
     elif (ext == ".spectrum" or re.search(r"\.spectrum\.root\d+$", ext)) and \
             not (s[5] or s[6]):
         return True
-    return None
+    return False
 
 def is_unique(s: pd.Series) -> bool:
     #check if all strings are the same 
