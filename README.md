@@ -154,11 +154,6 @@ Based on `orca_uv` by [Sebastian Dechert](https://github.com/radi0sus/orca_uv)
 - Change the line color/style when the same type of data type is plotted multiple times.
 - Add transmittance mode (-tr/--transmittance) for IR/Raman/VPT2 spectra.
 
-### Performance
-- P1: read_out() reads entire file at once instead of line-by-line
-- P2: No early exit in read_ir/read_raman after IR/Raman section ends
-- P3: Python list comparison in hot loop; use np.array_equal
-
 ### Imports / structure
 - I1: Logger in data_reader.py is unconfigured
 - I2: Logger placed between import groups
