@@ -409,6 +409,25 @@ def main():
                         help='use the gaussian line shape function'
                         )
 
+    parser.add_argument('-IR', '--axisIR',
+                        default=False,
+                        action='store_true',
+                        help='label experimental data as IR spectrum'
+                        )
+
+    parser.add_argument('-ABS', '--axisABS',
+                        default=False,
+                        action='store_true',
+                        help='label experimental data as absorption '
+                             'spectrum'
+                        )
+
+    parser.add_argument('-Raman', '--axisRaman',
+                        default=False,
+                        action='store_true',
+                        help='label experimental data as Raman spectrum'
+                        )
+
     parser.add_argument('-PL', '--axisPL',
                         default=0,
                         action='store_true',
@@ -473,6 +492,13 @@ def main():
     wn_plot = args.plotwn
     ev_plot = args.plotev
     ls_gauss = args.lineshape_gauss
+    expt_showname = None
+    if args.axisIR:
+        expt_showname = "IR"
+    elif args.axisABS:
+        expt_showname = "Absorption"
+    elif args.axisRaman:
+        expt_showname = "Raman"
     shift_wn = args.shiftwn if args.shiftwn is not None else 0.0
     shift_ev = (args.shiftev if args.shiftev is not None else 0.0) \
                * CONV_WNTOEV
@@ -636,6 +662,8 @@ def main():
             _plot_tddft(ax, row, i, plt_range_x, w, ls_gauss, palette,
                         lw, plot_data)
         elif row["ext"] == ".asc":
+            if expt_showname and row["spectrum_type"] == "experimental":
+                types_plotted.add(expt_showname)
             _plot_experimental(ax, row, i, palette, lw, plot_data)
         elif row["ext"] == ".spectrum":
             _plot_esd(ax, row, i, palette, lw, plot_data)
