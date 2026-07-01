@@ -227,8 +227,14 @@ class SpectrumData:
         with open(self.path, 'r') as file:
             for line in file:
                 #start extract text
-                wavelengthlist.append(float(line.strip().split()[0]))
-                intenslist.append(float(line.strip().split()[1]))
+                parts = line.strip().split()
+                if len(parts) < 2:
+                    continue
+                try:
+                    wavelengthlist.append(float(parts[0]))
+                    intenslist.append(float(parts[1]))
+                except ValueError:
+                    continue
 
         #return data from experiment.asc
         return wavelengthlist, intenslist
@@ -240,8 +246,14 @@ class SpectrumData:
             for line in file:
                 #start extract text
                 if re.search(r"^\s*\d", line):
-                    energylist.append(float(line.strip().split()[0]))
-                    intenslist.append(float(line.strip().split()[1]))
+                    parts = line.strip().split()
+                    if len(parts) < 2:
+                        continue
+                    try:
+                        energylist.append(float(parts[0]))
+                        intenslist.append(float(parts[1]))
+                    except ValueError:
+                        continue
 
         #return data from experiment.asc
         return energylist, intenslist
