@@ -1,3 +1,9 @@
+"""Utility functions for spectrum processing and plotting.
+
+Created on January 10, 2026
+@author: Emmanuel Bourret
+"""
+
 from typing import Optional
 import numpy as np                      #element-wise tensor processing
 import pandas as pd                     #dataframe processing

@@ -1,3 +1,9 @@
+"""Reader for ORCA output, experimental, and ESD spectrum files.
+
+Created on January 10, 2026
+@author: Emmanuel Bourret
+"""
+
 import logging
 import re                           #regex
 

@@ -1,3 +1,9 @@
+"""Tests for spectrum processing utility functions.
+
+Created on June 29, 2026
+@author: Emmanuel Bourret
+"""
+
 import numpy as np
 import pandas as pd
 import sys

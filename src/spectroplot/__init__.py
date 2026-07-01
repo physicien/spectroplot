@@ -6,6 +6,9 @@ SpectrumData
     Class for reading and parsing spectrum files.
 main
     CLI entry point.
+
+Created on June 30, 2026
+@author: Emmanuel Bourret
 """
 
 from spectroplot.data_reader import SpectrumData as SpectrumData

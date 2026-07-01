@@ -1,3 +1,9 @@
+"""Entry point and plotting functions for the spectroplot CLI.
+
+Created on June 30, 2026
+@author: Emmanuel Bourret
+"""
+
 import sys                              #sys files processing
 from typing import Optional
 from pathlib import Path                #path processing

@@ -1,5 +1,8 @@
 """Global constants and default configuration for spectroplot.
 
+Created on January 10, 2026
+@author: Emmanuel Bourret
+
 All-capitals names are true constants. Lowercase names are
 user-configurable defaults that can be overridden via CLI flags or
 by modifying this file directly.
