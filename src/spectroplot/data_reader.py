@@ -228,6 +228,8 @@ class SpectrumData:
 
         # 3. Match fundamental mode N with IR intensity at mode N+6
         self.vpt2_nfund = len(fund_data)
+        #ORCA numbers IR intensities by absolute mode; modes 0-5 are
+        #translations/rotations, so vibrational mode 0 maps to IR mode 6
         for mode, v_fund in fund_data.items():
             ir_mode = mode + 6
             if ir_mode in ir_intensities:
