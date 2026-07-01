@@ -1,3 +1,5 @@
+"""Compiled regular expressions shared across modules."""
+
 import re
 from spectroplot.global_constants import RE_SPECTRUM_ROOT_PATTERN
 
