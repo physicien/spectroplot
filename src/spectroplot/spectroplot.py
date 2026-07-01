@@ -333,7 +333,7 @@ def main():
     #check if more than one plotXX are true - exit if true
     #if false, set the plot type
     if atLeastTwo(nm_plot,wn_plot,ev_plot):
-        print("Warning. Multiple types of unit set to true for the x-axis. Exit.")
+        print("Warning. Multiple types of unit set to true for the x-axis. Exit.", file=sys.stderr)
         sys.exit(1)
     else:
         #return the type of plot (nm,wn,ev) and npt
@@ -344,47 +344,47 @@ def main():
     if 1 <= args.linewidth_nm <= 500:
         w_nm_use = args.linewidth_nm
     else:
-        print("warning! line width exceeds range, reset to 20")
+        print("warning! line width exceeds range, reset to 20", file=sys.stderr)
         w_nm_use = 20
 
     #check if w for wn is between 100 and 20000, else reset to 1000
     if 100 <= args.linewidth_wn <= 20000:
         w_wn_use = args.linewidth_wn
     else:
-        print("warning! line width exceeds range, reset to 1000")
+        print("warning! line width exceeds range, reset to 1000", file=sys.stderr)
         w_wn_use = 1000
 
     #check if w for eV is between 0.01 and 2.5, else reset to 0.1
     if 0.01 <= args.linewidth_ev <= 2.5:
         w_ev_use = args.linewidth_ev
     else:
-        print("warning! line width exceeds range, reset to 0.1")
+        print("warning! line width exceeds range, reset to 0.1", file=sys.stderr)
         w_ev_use = 0.1
 
     #check if startx and endx are equal - exit if true
     if args.startx is not None and args.endx is not None \
             and args.startx == args.endx:
-        print("Warning. x0 and x1 are equal. Exit.")
+        print("Warning. x0 and x1 are equal. Exit.", file=sys.stderr)
         sys.exit(1)
 
     #check if startx < 0 - exit if true
     if args.startx is not None and args.startx < 0:
-        print("Warning. x0 < 0. Exit.")
+        print("Warning. x0 < 0. Exit.", file=sys.stderr)
         sys.exit(1)
 
     #check if endx < 0 - exit if true
     if args.endx is not None and args.endx < 0:
-        print("Warning. x1 < 0. Exit.")
+        print("Warning. x1 < 0. Exit.", file=sys.stderr)
         sys.exit(1)
 
     #check if endy < 0 - exit if true
     if args.endy is not None and args.endy < 0:
-        print("Warning. y1 < 0. Exit.")
+        print("Warning. y1 < 0. Exit.", file=sys.stderr)
         sys.exit(1)
 
     #check if shiftwn and shiftev are both defined - exit if true
     if args.shiftwn != 0 and args.shiftev != 0:
-        print("Warning. Both shifts in cm**-1 and in eV are defined. Exit.")
+        print("Warning. Both shifts in cm**-1 and in eV are defined. Exit.", file=sys.stderr)
         sys.exit(1)
     else:
         shift=shift_wn+shift_ev
@@ -406,7 +406,7 @@ def main():
         try:
             spectrum = SpectrumData(path)
         except (ValueError, IOError) as e:
-            print(f"Warning: {e}")
+            print(f"Warning: {e}", file=sys.stderr)
             continue
         if spectrum.spectrum_type == "ir":
             ir_input = True
@@ -431,7 +431,7 @@ def main():
         spectra_list.append(spectrum_data)
     if not spectra_list:
         #check if spectra_list is empty - exit if true
-        print("Warning. You are requesting an empty plot. Exit.")
+        print("Warning. You are requesting an empty plot. Exit.", file=sys.stderr)
         sys.exit(1)
 
     #select y-axis label and linewidth based on input type
@@ -447,7 +447,7 @@ def main():
         try:
             root_sum = rootSum(df)
         except ValueError as e:
-            print(f"Warning: {e}")
+            print(f"Warning: {e}", file=sys.stderr)
             root_sum = None
         if root_sum is not None:
             df = pd.concat([df, root_sum], ignore_index=True)
