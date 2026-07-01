@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 import sys
 sys.path.insert(0, "src")
 
@@ -8,6 +9,8 @@ from spectroplot.functions import (
     wntonm, wntoev, nmtown, nmtoev,
     lineshape, normalization, atLeastTwo,
     plotType, roundup, rounddown, unitConverter,
+    show_plots, is_unique, rootSum,
+    xdataPrep, xdatamin, xdatamax, plotxrange,
 )
 from spectroplot.global_constants import conv_wntoev
 
@@ -208,3 +211,149 @@ class TestRounding:
     def test_rounddown_nm(self):
         assert rounddown(127, False, False, True) == 120
         assert rounddown(120, False, False, True) == 120
+
+
+class TestShowPlots:
+    def test_out_any_true(self):
+        assert show_plots(".out", [True, False, False, False, False, False, False]) is True
+        assert show_plots(".out", [False, True, False, False, False, False, False]) is True
+        assert show_plots(".out", [False, False, True, False, False, False, False]) is True
+        assert show_plots(".out", [False, False, False, True, False, False, False]) is True
+
+    def test_out_all_false(self):
+        assert show_plots(".out", [False, False, False, False, False, False, False]) is False
+
+    def test_asc_true(self):
+        assert show_plots(".asc", [False, False, False, False, True, False, False]) is True
+
+    def test_asc_false(self):
+        assert show_plots(".asc", [False, False, False, False, False, False, False]) is False
+
+    def test_spectrum_true(self):
+        assert show_plots(".spectrum", [False, False, False, False, False, True, False]) is True
+        assert show_plots(".spectrum", [False, False, False, False, False, False, True]) is True
+
+    def test_spectrum_false(self):
+        assert show_plots(".spectrum", [False, False, False, False, False, False, False]) is False
+
+    def test_root_ext_true(self):
+        assert show_plots(".spectrum.root1", [False, False, False, False, False, True, False]) is True
+
+    def test_unknown_ext(self):
+        assert show_plots(".xyz", [True, True, True, True, True, True, True]) is False
+
+
+class TestIsUnique:
+    def test_empty_series(self):
+        assert is_unique(pd.Series([], dtype=float)) is True
+
+    def test_all_same(self):
+        assert is_unique(pd.Series(["a", "a", "a"])) is True
+
+    def test_different(self):
+        assert is_unique(pd.Series(["a", "b", "a"])) is False
+
+    def test_single_element(self):
+        assert is_unique(pd.Series(["a"])) is True
+
+
+class TestRootSum:
+    def test_basic_sum(self):
+        xdata = np.array([1.0, 2.0, 3.0])
+        df = pd.DataFrame([
+            {"name": "test", "ext": ".spectrum", "root_number": 1,
+             "xdata": xdata, "ydata": np.array([1.0, 2.0, 3.0])},
+            {"name": "test", "ext": ".spectrum", "root_number": 2,
+             "xdata": xdata, "ydata": np.array([4.0, 5.0, 6.0])},
+        ])
+        result = rootSum(df)
+        assert len(result) == 1
+        np.testing.assert_array_equal(result.iloc[0]["xdata"], xdata)
+        np.testing.assert_array_equal(result.iloc[0]["ydata"], np.array([5.0, 7.0, 9.0]))
+
+    def test_different_names_raises(self):
+        df = pd.DataFrame([
+            {"name": "a", "ext": ".spectrum", "root_number": 1,
+             "xdata": np.array([1.0]), "ydata": np.array([1.0])},
+            {"name": "b", "ext": ".spectrum", "root_number": 2,
+             "xdata": np.array([1.0]), "ydata": np.array([1.0])},
+        ])
+        import pytest
+        with pytest.raises(ValueError, match="Roots from different systems"):
+            rootSum(df)
+
+    def test_different_xdata_raises(self):
+        df = pd.DataFrame([
+            {"name": "test", "ext": ".spectrum", "root_number": 1,
+             "xdata": np.array([1.0, 2.0]), "ydata": np.array([1.0, 2.0])},
+            {"name": "test", "ext": ".spectrum", "root_number": 2,
+             "xdata": np.array([1.0, 3.0]), "ydata": np.array([3.0, 4.0])},
+        ])
+        import pytest
+        with pytest.raises(ValueError, match="different xdata"):
+            rootSum(df)
+
+    def test_no_roots_returns_empty_dataframe(self):
+        df = pd.DataFrame([
+            {"name": "test", "ext": ".spectrum", "root_number": 0,
+             "xdata": np.array([1.0]), "ydata": np.array([1.0])},
+        ])
+        import pytest
+        with pytest.raises(IndexError):
+            rootSum(df)
+
+
+class TestPlotXRange:
+    def test_basic(self):
+        df = pd.DataFrame([{"xdata_plot_max": 100.0}])
+        result = plotxrange(df, None, 10)
+        assert len(result) == 1000
+        assert result[0] == 0
+        assert abs(result[-1] - 99.9) < 1e-10
+
+    def test_with_x1_override(self):
+        df = pd.DataFrame([{"xdata_plot_max": 100.0}])
+        result = plotxrange(df, 200.0, 10)
+        assert abs(result[-1] - 199.9) < 1e-10
+
+    def test_x1_smaller_than_data(self):
+        df = pd.DataFrame([{"xdata_plot_max": 100.0}])
+        result = plotxrange(df, 50.0, 10)
+        assert abs(result[-1] - 99.9) < 1e-10
+
+
+class TestXDataPrep:
+    def test_asc_passthrough(self):
+        row = pd.Series({"ext": ".asc", "xdata": np.array([400.0, 500.0])})
+        result = xdataPrep(row, "nm", 0.0)
+        np.testing.assert_allclose(result, [400.0, 500.0])
+
+    def test_out_with_shift(self):
+        row = pd.Series({"ext": ".out", "xdata": np.array([1000.0, 2000.0])})
+        result = xdataPrep(row, "wn", 50.0)
+        np.testing.assert_allclose(result, [1050.0, 2050.0])
+
+    def test_out_without_shift(self):
+        row = pd.Series({"ext": ".out", "xdata": np.array([1000.0, 2000.0])})
+        result = xdataPrep(row, "wn", 0.0)
+        np.testing.assert_allclose(result, [1000.0, 2000.0])
+
+
+class TestXDataMin:
+    def test_asc(self):
+        row = pd.Series({"ext": ".asc", "xdata_plot": np.array([400.0, 500.0])})
+        assert xdatamin(row, 10.0) == 400.0 - 30.0
+
+    def test_out(self):
+        row = pd.Series({"ext": ".out", "xdata_plot": np.array([1000.0, 2000.0])})
+        assert xdatamin(row, 10.0) == 1000.0
+
+
+class TestXDataMax:
+    def test_asc(self):
+        row = pd.Series({"ext": ".asc", "xdata_plot": np.array([400.0, 500.0])})
+        assert xdatamax(row, 10.0) == 500.0 + 30.0
+
+    def test_out(self):
+        row = pd.Series({"ext": ".out", "xdata_plot": np.array([1000.0, 2000.0])})
+        assert xdatamax(row, 10.0) == 2000.0

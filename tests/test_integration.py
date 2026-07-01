@@ -84,8 +84,9 @@ class TestMainIntegration:
             patch("spectroplot.spectroplot.sns.color_palette"),
             patch("spectroplot.spectroplot.sns.set_palette"),
         ):
-            with pytest.raises(SystemExit):
+            with pytest.raises(SystemExit) as exc_info:
                 main()
+            assert exc_info.value.code == 1
 
     def test_mixed_types(self):
         mock_ax = self._run_main([TEST_FILES["tddft"], TEST_FILES["experimental"]])
@@ -123,6 +124,62 @@ class TestMainIntegration:
                 main()
             assert mock_show.called, "plt.show should be called with -s flag"
 
+    def test_exp_spectrum_disabled(self):
+        with (
+            patch("spectroplot.spectroplot.plt.subplots"),
+            patch("spectroplot.spectroplot.plt.savefig"),
+            patch("spectroplot.spectroplot.plt.show"),
+            patch("spectroplot.spectroplot.sns.color_palette"),
+            patch("spectroplot.spectroplot.sns.set_palette"),
+            patch("spectroplot.spectroplot.show_exp_spectrum", False),
+        ):
+            from spectroplot.spectroplot import main
+            cli_args = ["spectroplot", TEST_FILES["experimental"], "-n"]
+            with patch.object(sys, "argv", cli_args):
+                with pytest.raises(SystemExit) as exc_info:
+                    main()
+            assert exc_info.value.code == 1
+
+    def test_esd_spectrum_disabled(self):
+        with (
+            patch("spectroplot.spectroplot.plt.subplots"),
+            patch("spectroplot.spectroplot.plt.savefig"),
+            patch("spectroplot.spectroplot.plt.show"),
+            patch("spectroplot.spectroplot.sns.color_palette"),
+            patch("spectroplot.spectroplot.sns.set_palette"),
+            patch("spectroplot.spectroplot.show_esd_spectrum", False),
+            patch("spectroplot.spectroplot.show_single_root_area", False),
+        ):
+            from spectroplot.spectroplot import main
+            cli_args = ["spectroplot", TEST_FILES["esd"], "-n"]
+            with patch.object(sys, "argv", cli_args):
+                with pytest.raises(SystemExit) as exc_info:
+                    main()
+            assert exc_info.value.code == 1
+
+    def test_tddft_conv_disabled_sticks_enabled(self):
+        with (
+            patch("spectroplot.spectroplot.plt.subplots") as mock_subplots,
+            patch("spectroplot.spectroplot.plt.savefig"),
+            patch("spectroplot.spectroplot.plt.show"),
+            patch("spectroplot.spectroplot.sns.color_palette"),
+            patch("spectroplot.spectroplot.sns.set_palette"),
+            patch("spectroplot.spectroplot.show_conv_spectrum", False),
+        ):
+            mock_ax = MagicMock()
+            mock_fig = MagicMock()
+            mock_subplots.return_value = (mock_fig, mock_ax)
+            mock_ax.get_xlim.return_value = (0, 50000)
+
+            from spectroplot.spectroplot import main
+            cli_args = ["spectroplot", TEST_FILES["tddft"], "-n"]
+            with patch.object(sys, "argv", cli_args):
+                main()
+            assert not mock_ax.plot.called, \
+                "ax.plot should not be called when show_conv_spectrum is False"
+            assert mock_ax.stem.called, \
+                "ax.stem should still be called for sticks"
+
     def test_acs_format(self):
         mock_ax = self._run_main([TEST_FILES["tddft"], "-acs"])
         assert mock_ax.plot.called
@@ -135,18 +192,10 @@ class TestDataReaderErrors:
         from spectroplot.data_reader import SpectrumData
         with patch("builtins.open") as mock_open:
             mock_open.side_effect = FileNotFoundError("no such file")
-            try:
+            with pytest.raises(IOError):
                 SpectrumData("fake_path.out")
-            except IOError:
-                pass
-            else:
-                assert False, "Expected IOError for nonexistent file"
 
     def test_unknown_extension_raises(self):
         from spectroplot.data_reader import SpectrumData
-        try:
+        with pytest.raises(ValueError, match="Unknown file extension"):
             SpectrumData("data/TD-DFT/UV_c60-Ih.out.unknown")
-        except ValueError as e:
-            assert "Unknown file extension" in str(e)
-        else:
-            assert False, "Expected ValueError for unknown extension"

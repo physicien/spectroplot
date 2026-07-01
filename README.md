@@ -154,17 +154,6 @@ Based on `orca_uv` by [Sebastian Dechert](https://github.com/radi0sus/orca_uv)
 - Change the line color/style when the same type of data type is plotted multiple times.
 - Add transmittance mode (-tr/--transmittance) for IR/Raman/VPT2 spectra.
 
-### Test coverage
-- T1: No unit test for show_plots()
-- T2: No unit test for is_unique()
-- T3: No unit test for rootSum()
-- T4: No unit tests for xdataPrep, xdatamin, xdatamax, plotxrange
-- T5: read_ir, read_raman, read_vpt2 not tested in isolation
-- T6: read_out_abs only exercises one ORCA version path
-- T7: No tests for show_* toggle combinations
-- T8: test_nonexistent_file_skipped doesn't check exit code
-- T9-T10: Use pytest.raises instead of try/except/else
-
 ### Minor
 - M1: ORCA version check uses first char only (wrong for 10+)
 - M2: Hardcoded mode + 6 magic number in VPT2
