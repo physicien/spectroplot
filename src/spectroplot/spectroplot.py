@@ -588,7 +588,7 @@ def main():
             peaks, _ = find_peaks(yrange, prominence=0.01,
                                   distance=dist_samples)
             y_max = max(yrange) if len(yrange) else 1
-            for j, peak_j in enumerate(peaks):
+            for peak_j in peaks:
                 if yrange[peak_j] > 0.02 * y_max:
                     peaks_list.append([xrange[peak_j],yrange[peak_j]])
 
@@ -613,7 +613,7 @@ def main():
 
     #label peaks
     if show_label_peaks:
-        for i,v in enumerate(peaks_list):
+        for v in peaks_list:
             p_label = "{:.2f}".format(v[0])
             ax.annotate(p_label,
                         xy=(v[0],v[1]),
@@ -628,7 +628,7 @@ def main():
     #label roots
     if show_label_roots and show_single_root_area and df["root_number"].max() > 0:
         esd_palette = sns.color_palette(color_palette,df["root_number"].max())
-        for i,v in enumerate(roots_list):
+        for v in roots_list:
             r_label = "{:d}".format(v[0])
             ax.annotate(r_label,
                         xy=(v[1],v[2]),
