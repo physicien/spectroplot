@@ -74,11 +74,11 @@ spectroplot data/experimental/C60_PL.asc -s -n -PL
 ![PL spectrum](examples/expt_pl.png)
 
 ```console
-# Experimental IR spectrum
-spectroplot data/experimental/C60_PL.asc -s -n -IR
+# Experimental Raman spectrum
+spectroplot data/experimental/C90-raman.asc -s -n -Raman
 ```
 
-![Experimental IR spectrum](examples/expt_ir.png)
+![Experimental Raman spectrum](examples/expt_raman.png)
 
 ```console
 # Custom output as PNG
