@@ -1,0 +1,13 @@
+-r requirements.txt
+-r requirements-documentation.txt
+
+# for linting
+ruff==0.15.20
+
+# for testing
+pytest==9.0.3
+hypothesis==6.155.7
+
+# for creating releases
+build==1.2.2
+twine==6.1.0

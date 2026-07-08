@@ -17,7 +17,22 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=7", "hypothesis>=6", "ruff>=0.4"]
+test = [
+    "pytest>=7",
+    "hypothesis>=6",
+    "ruff>=0.4",
+]
+docs = [
+    "sphinx",
+    "sphinx-rtd-theme",
+    "numpydoc",
+    "sphinx-copybutton",
+]
+release = [
+    "build",
+    "twine",
+]
+dev = ["spectroplot[docs, test, release]"]
 
 [project.scripts]
 spectroplot = "spectroplot:main"
