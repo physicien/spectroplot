@@ -5,10 +5,13 @@ Created on January 10, 2026
 """
 
 from typing import Optional
-import numpy as np                      #element-wise tensor processing
-import pandas as pd                     #dataframe processing
-from spectroplot.global_constants import npt_nm, npt_wn, npt_ev, CONV_WNTOEV
+
+import numpy as np  #element-wise tensor processing
+import pandas as pd  #dataframe processing
+
 from spectroplot._patterns import RE_SPECTRUM_ROOT
+from spectroplot.global_constants import CONV_WNTOEV, npt_ev, npt_nm, npt_wn
+
 
 def show_plots(ext: str, s: list[bool]) -> bool:
     """Check if the file type matches any requested plot type.

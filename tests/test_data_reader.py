@@ -5,11 +5,11 @@ Created on June 29, 2026
 """
 
 import sys
+
 sys.path.insert(0, "src")
 
 from spectroplot.data_reader import SpectrumData
-from spectroplot.global_constants import SPECSTRING_START, SPECSTRING_END
-
+from spectroplot.global_constants import SPECSTRING_END, SPECSTRING_START
 
 DATA_DIR = "data"
 
@@ -296,7 +296,9 @@ class TestReadIrIsolation:
         assert abs(x[2] - 300.0) < 1e-6
 
     def test_read_ir_early_exit(self):
-        x, y = self.sd.read_ir(lines=IR_LINES + ["extra\n", "    4:   400.00      0.200000\n"])
+        x, y = self.sd.read_ir(
+            lines=IR_LINES + ["extra\n", "    4:   400.00      0.200000\n"]
+        )
         assert len(x) == 3, "should stop at blank line, not read extra"
 
 
@@ -311,7 +313,10 @@ class TestReadRamanIsolation:
         assert abs(y[0] - 0.5) < 1e-6
 
     def test_read_raman_early_exit(self):
-        x, y = self.sd.read_raman(lines=RAMAN_LINES + ["extra\n", "    4:   400.00      0.200000      0.500000\n"])
+        x, y = self.sd.read_raman(
+            lines=RAMAN_LINES
+            + ["extra\n", "    4:   400.00      0.200000      0.500000\n"]
+        )
         assert len(x) == 3, "should stop at blank line, not read extra"
 
 

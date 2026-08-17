@@ -5,16 +5,18 @@ Created on January 10, 2026
 """
 
 import logging
-import re                           #regex
-
-from pathlib import Path            #path processing (replace os)
+import re  #regex
+from pathlib import Path  #path processing (replace os)
 from typing import Iterator, Optional, Tuple
 
-from spectroplot.global_constants import (
-    SPECSTRING_START, SPECSTRING_END, IR_STRING, VPT2_STRING,
-    RAMAN_STRING,
-)
 from spectroplot._patterns import RE_SPECTRUM_ROOT
+from spectroplot.global_constants import (
+    IR_STRING,
+    RAMAN_STRING,
+    SPECSTRING_END,
+    SPECSTRING_START,
+    VPT2_STRING,
+)
 
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())

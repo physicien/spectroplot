@@ -5,7 +5,6 @@ Created on June 30, 2026
 """
 
 import sys
-from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -95,7 +94,9 @@ class TestMainIntegration:
             assert exc_info.value.code == 1
 
     def test_mixed_types(self):
-        mock_ax = self._run_main([TEST_FILES["tddft"], TEST_FILES["experimental"]])
+        mock_ax = self._run_main(
+            [TEST_FILES["tddft"], TEST_FILES["experimental"]]
+        )
         assert mock_ax.plot.called
 
     def test_multiple_esd_roots(self):
