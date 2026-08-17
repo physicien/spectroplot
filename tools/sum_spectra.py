@@ -58,7 +58,7 @@ for index,path in enumerate(args.filename):
 
     #file not found -> exit here
     except IOError:
-        print(f"'{filename}'" + " not found")
+        print(f"'{path}'" + " not found")
         sys.exit(1)
 
 data = np.column_stack([energylist_tot, intenslist_tot, fclist_tot, htlist_tot])
