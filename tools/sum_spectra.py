@@ -1,8 +1,9 @@
 #!/usr/bin/python3
-import sys
+import argparse
 import os
 import re
-import argparse
+import sys
+
 import numpy as np
 
 #global variables
@@ -42,7 +43,7 @@ for index,path in enumerate(args.filename):
                     intenslist.append(float(line.strip().split()[1]))
                     fclist.append(float(line.strip().split()[2]))
                     htlist.append(float(line.strip().split()[3]))
-        
+
         print("{0:s}\t{1:e}".format(filename_root,max(intenslist)))
         energylist_tot = energylist
         if index == 0:
@@ -57,7 +58,7 @@ for index,path in enumerate(args.filename):
 
     #file not found -> exit here
     except IOError:
-        print(f"'{filename}'" + " not found")
+        print(f"'{path}'" + " not found")
         sys.exit(1)
 
 data = np.column_stack([energylist_tot, intenslist_tot, fclist_tot, htlist_tot])

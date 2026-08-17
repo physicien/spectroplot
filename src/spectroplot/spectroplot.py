@@ -4,37 +4,77 @@ Created on June 30, 2026
 @author: Emmanuel Bourret
 """
 
-import sys                              #sys files processing
+import argparse  #argument parser
+import sys  #sys files processing
+from pathlib import Path  #path processing
 from typing import Optional
-from pathlib import Path                #path processing
-import argparse                         #argument parser
-import numpy as np                      #element-wise tensor processing
-import pandas as pd                     #dataframes processing
-import matplotlib.pyplot as plt         #plots
-import seaborn as sns                   #color palettes
-from scipy.signal import find_peaks     #peak detection
 
-from spectroplot.global_constants import (
-    th_fac, esd_fac, ex_fac, color_palette,
-    label_tddft, label_sticks, label_expt, label_roots,
-    label_ir, label_raman, label_vpt2, label_vpt2_overt,
-    label_sticks_vib,
-    show_single_lineshape, show_single_lineshape_area,
-    show_conv_spectrum, show_sticks, show_exp_spectrum,
-    show_esd_spectrum, show_single_root_area,
-    show_label_peaks, show_label_roots,
-    show_minor_ticks, show_grid, show_legend, linear_locator,
-    y_label, y_label_PL, x_label_wn, x_label_ev, x_label_nm,
-    label_rotation_angle, figure_dpi, acs_w, acs_h, output_name,
-    CONV_WNTOEV, w_nm, w_wn, w_ev, w_ir, w_raman,
-)
+import matplotlib.pyplot as plt  #plots
+import numpy as np  #element-wise tensor processing
+import pandas as pd  #dataframes processing
+import seaborn as sns  #color palettes
+from scipy.signal import find_peaks  #peak detection
+
 from spectroplot._patterns import RE_SPECTRUM_ROOT
+from spectroplot.data_reader import SpectrumData  #spectrum data parser
 from spectroplot.functions import (
-    atLeastTwo, plotType, show_plots, rootSum,
-    xdataPrep, xdatamin, xdatamax, plotxrange,
-    lineshape, normalization, rounddown, roundup,
+    atLeastTwo,
+    lineshape,
+    normalization,
+    plotType,
+    plotxrange,
+    rootSum,
+    rounddown,
+    roundup,
+    show_plots,
+    xdatamax,
+    xdatamin,
+    xdataPrep,
 )
-from spectroplot.data_reader import SpectrumData    #spectrum data parser
+from spectroplot.global_constants import (
+    CONV_WNTOEV,
+    acs_h,
+    acs_w,
+    color_palette,
+    esd_fac,
+    ex_fac,
+    figure_dpi,
+    label_expt,
+    label_ir,
+    label_raman,
+    label_roots,
+    label_rotation_angle,
+    label_sticks,
+    label_sticks_vib,
+    label_tddft,
+    label_vpt2,
+    label_vpt2_overt,
+    linear_locator,
+    output_name,
+    show_conv_spectrum,
+    show_esd_spectrum,
+    show_exp_spectrum,
+    show_grid,
+    show_label_peaks,
+    show_label_roots,
+    show_legend,
+    show_minor_ticks,
+    show_single_lineshape,
+    show_single_lineshape_area,
+    show_single_root_area,
+    show_sticks,
+    th_fac,
+    w_ev,
+    w_ir,
+    w_nm,
+    w_raman,
+    w_wn,
+    x_label_ev,
+    x_label_nm,
+    x_label_wn,
+    y_label,
+    y_label_PL,
+)
 
 
 def _plot_tddft(ax, row, i, plt_range_x, w, ls_gauss, palette, lw,

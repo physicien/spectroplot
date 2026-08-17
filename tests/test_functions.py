@@ -4,27 +4,43 @@ Created on June 29, 2026
 @author: Emmanuel Bourret
 """
 
+import sys
+
 import numpy as np
 import pandas as pd
-import sys
+
 sys.path.insert(0, "src")
 
-from hypothesis import given, strategies as st, settings
+from hypothesis import given, settings
+from hypothesis import strategies as st
 
 from spectroplot.functions import (
-    wntonm, wntoev, nmtown, nmtoev,
-    lineshape, normalization, atLeastTwo,
-    plotType, roundup, rounddown, unitConverter,
-    show_plots, is_unique, rootSum,
-    xdataPrep, xdatamin, xdatamax, plotxrange,
+    atLeastTwo,
+    is_unique,
+    lineshape,
+    nmtoev,
+    nmtown,
+    normalization,
+    plotType,
+    plotxrange,
+    rootSum,
+    rounddown,
+    roundup,
+    show_plots,
+    unitConverter,
+    wntoev,
+    wntonm,
+    xdatamax,
+    xdatamin,
+    xdataPrep,
 )
-from spectroplot.global_constants import CONV_WNTOEV
 
 # Strategies for property-based converter tests
 positive_floats = st.floats(min_value=1, max_value=1e6, allow_infinity=False,
                             allow_nan=False)
 positive_nparrays = st.lists(
-    st.floats(min_value=1, max_value=1e6, allow_infinity=False, allow_nan=False),
+    st.floats(min_value=1, max_value=1e6, allow_infinity=False,
+              allow_nan=False),
     min_size=1, max_size=10,
 ).map(np.array)
 
@@ -221,32 +237,56 @@ class TestRounding:
 
 class TestShowPlots:
     def test_out_any_true(self):
-        assert show_plots(".out", [True, False, False, False, False, False, False]) is True
-        assert show_plots(".out", [False, True, False, False, False, False, False]) is True
-        assert show_plots(".out", [False, False, True, False, False, False, False]) is True
-        assert show_plots(".out", [False, False, False, True, False, False, False]) is True
+        assert show_plots(
+            ".out", [True, False, False, False, False, False, False]
+        ) is True
+        assert show_plots(
+            ".out", [False, True, False, False, False, False, False]
+        ) is True
+        assert show_plots(
+            ".out", [False, False, True, False, False, False, False]
+        ) is True
+        assert show_plots(
+            ".out", [False, False, False, True, False, False, False]
+        ) is True
 
     def test_out_all_false(self):
-        assert show_plots(".out", [False, False, False, False, False, False, False]) is False
+        assert show_plots(
+            ".out", [False, False, False, False, False, False, False]
+        ) is False
 
     def test_asc_true(self):
-        assert show_plots(".asc", [False, False, False, False, True, False, False]) is True
+        assert show_plots(
+            ".asc", [False, False, False, False, True, False, False]
+        ) is True
 
     def test_asc_false(self):
-        assert show_plots(".asc", [False, False, False, False, False, False, False]) is False
+        assert show_plots(
+            ".asc", [False, False, False, False, False, False, False]
+        ) is False
 
     def test_spectrum_true(self):
-        assert show_plots(".spectrum", [False, False, False, False, False, True, False]) is True
-        assert show_plots(".spectrum", [False, False, False, False, False, False, True]) is True
+        assert show_plots(
+            ".spectrum", [False, False, False, False, False, True, False]
+        ) is True
+        assert show_plots(
+            ".spectrum", [False, False, False, False, False, False, True]
+        ) is True
 
     def test_spectrum_false(self):
-        assert show_plots(".spectrum", [False, False, False, False, False, False, False]) is False
+        assert show_plots(
+            ".spectrum", [False, False, False, False, False, False, False]
+        ) is False
 
     def test_root_ext_true(self):
-        assert show_plots(".spectrum.root1", [False, False, False, False, False, True, False]) is True
+        assert show_plots(
+            ".spectrum.root1", [False, False, False, False, False, True, False]
+        ) is True
 
     def test_unknown_ext(self):
-        assert show_plots(".xyz", [True, True, True, True, True, True, True]) is False
+        assert show_plots(
+            ".xyz", [True, True, True, True, True, True, True]
+        ) is False
 
 
 class TestIsUnique:
@@ -275,7 +315,9 @@ class TestRootSum:
         result = rootSum(df)
         assert len(result) == 1
         np.testing.assert_array_equal(result.iloc[0]["xdata"], xdata)
-        np.testing.assert_array_equal(result.iloc[0]["ydata"], np.array([5.0, 7.0, 9.0]))
+        np.testing.assert_array_equal(
+            result.iloc[0]["ydata"], np.array([5.0, 7.0, 9.0])
+        )
 
     def test_different_names_raises(self):
         df = pd.DataFrame([
@@ -351,7 +393,9 @@ class TestXDataMin:
         assert xdatamin(row, 10.0) == 400.0 - 30.0
 
     def test_out(self):
-        row = pd.Series({"ext": ".out", "xdata_plot": np.array([1000.0, 2000.0])})
+        row = pd.Series(
+            {"ext": ".out", "xdata_plot": np.array([1000.0, 2000.0])}
+        )
         assert xdatamin(row, 10.0) == 1000.0
 
 
@@ -361,5 +405,7 @@ class TestXDataMax:
         assert xdatamax(row, 10.0) == 500.0 + 30.0
 
     def test_out(self):
-        row = pd.Series({"ext": ".out", "xdata_plot": np.array([1000.0, 2000.0])})
+        row = pd.Series(
+            {"ext": ".out", "xdata_plot": np.array([1000.0, 2000.0])}
+        )
         assert xdatamax(row, 10.0) == 2000.0
